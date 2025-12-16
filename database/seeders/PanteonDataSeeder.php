@@ -76,6 +76,7 @@ class PanteonDataSeeder extends Seeder
         $this->command->info("Seeding sections from GeoJSON...");
 
 
+        // Seed underground lots
         foreach ($geoJsonData_underground['features'] as $feature) {
             $attributes = $feature['properties'];
 
@@ -90,7 +91,7 @@ class PanteonDataSeeder extends Seeder
             Lot::factory()->create($lot_underground);
         }
 
-
+        // Seed appartment lots
         foreach ($geoJsonData_appartment['features'] as $feature) {
             $attributes = $feature['properties'];
 
