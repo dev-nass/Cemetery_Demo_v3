@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignIdFor(Section::class)->constrained()->onDelete('cascade');
             $table->string('lot_number')->unique();
             $table->enum('lot_type', ['underground', 'apartment', 'columbarium']);
-            $table->enum('status', ['available', 'occupied', 'reservedd'])->default('available');
+            $table->enum('status', ['available', 'occupied', 'reserved'])->default('available');
             $table->json('coordinates');
             $table->timestamps();
         });
