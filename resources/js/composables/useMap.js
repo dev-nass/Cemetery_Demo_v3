@@ -10,10 +10,20 @@ export function useMapLots() {
     // Reactive state
     const map = ref(null);
     const editableLayers = ref(null);
+
     const allSectionLayer = ref(null);
     const allLotsLayer = ref(null);
+    const allLotsApartmentLayer = ref(null);
+    const allLotsUndergroundLayer = ref(null);
+
+    // Layer visibility controls
+    const showUnderground = ref(true);
+    const showApartment = ref(true);
+
+    // from DB
     const dbGeoJsonSections = ref([]);
     const dbGeoJsonLots = ref([]);
+
     const newGeoJsonData = ref(null);
     const selectedLotId = ref(null);
 
@@ -47,8 +57,9 @@ export function useMapLots() {
             const layerId = layer._leaflet_id;
 
             const popupContent = `
-                <strong>lot: ${feature.properties.lot_id}</strong><br>
+                <strong>Lot: ${feature.properties.lot_id}</strong><br>
                 Section: ${feature.properties.section}<br>
+                Type: ${feature.properties.lot_type}<br>
                 Status: ${feature.properties.status}<br>
                 <button onclick="window.selectLotForEditing(${layerId})" 
                     class="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
@@ -59,7 +70,7 @@ export function useMapLots() {
             layer.bindPopup(popupContent);
 
             // Permanent tooltip label
-            if (feature.properties?.Lot_id) {
+            if (feature.properties?.lot_id) {
                 layer.bindTooltip(String(feature.properties.lot_id), {
                     permanent: true,
                     direction: "center",
@@ -84,11 +95,21 @@ export function useMapLots() {
 
         if (typeof layerOrId === "string" || typeof layerOrId === "number") {
             const id = parseInt(layerOrId);
-            allLotsLayer.value?.eachLayer((l) => {
-                if (l._leaflet_id === id) {
-                    layer = l;
-                }
-            });
+
+            // Search in both layers
+            const searchLayers = [
+                allLotsUndergroundLayer.value,
+                allLotsApartmentLayer.value,
+            ].filter(Boolean);
+
+            for (const layerGroup of searchLayers) {
+                layerGroup.eachLayer((l) => {
+                    if (l._leaflet_id === id) {
+                        layer = l;
+                    }
+                });
+                if (layer) break;
+            }
         } else {
             layer = layerOrId;
         }
@@ -124,12 +145,12 @@ export function useMapLots() {
         });
 
         selectedLotId.value = geojson.properties?.lot_id;
-        console.log(`lot ${geojson.properties?.Lot_id} selected for editing`);
+        console.log(`Lot ${geojson.properties?.lot_id} selected for editing`);
 
         layer.closePopup();
     };
 
-    // Process features
+    /* Validate if the retreive record (feature) is valid */
     const processFeatures = (data) => {
         if (!data || !data.features || !Array.isArray(data.features)) {
             console.warn("Invalid GeoJSON data structure");
@@ -192,21 +213,101 @@ export function useMapLots() {
         return true;
     };
 
-    // Update layer visibility based on zoom
+    // Separate lots by type
+    const separateLotsByType = (features) => {
+        const underground = [];
+        const apartment = [];
+
+        features.forEach((feature) => {
+            if (!feature.properties?.lot_type) {
+                console.warn("Feature missing lot_type:", feature);
+                return;
+            }
+
+            const type = feature.properties.lot_type;
+            if (type === "underground") {
+                underground.push(feature);
+            } else if (type === "apartment" || type === "appartment") {
+                apartment.push(feature);
+            } else {
+                console.warn("Unknown lot_type:", type, feature);
+            }
+        });
+
+        return { underground, apartment };
+    };
+
+    // Toggle layer visibility
+    const toggleUndergroundLayer = (visible) => {
+        showUnderground.value = visible;
+        updateLayerVisibility();
+    };
+
+    const toggleApartmentLayer = (visible) => {
+        showApartment.value = visible;
+        updateLayerVisibility();
+    };
+
+    // Update layer visibility based on zoom and toggle state
     const updateLayerVisibility = () => {
         if (!map.value) return;
 
         const zoom = map.value.getZoom();
+        console.log(
+            "Current zoom level:",
+            zoom,
+            "Min required:",
+            MIN_RENDER_ZOOM
+        );
 
         if (zoom < MIN_RENDER_ZOOM) {
-            if (map.value.hasLayer(allLotsLayer.value)) {
-                map.value.removeLayer(allLotsLayer.value);
-                console.log("Lots hidden (zoom too far)");
+            // Hide all layers if zoomed out too far
+            if (
+                allLotsUndergroundLayer.value &&
+                map.value.hasLayer(allLotsUndergroundLayer.value)
+            ) {
+                map.value.removeLayer(allLotsUndergroundLayer.value);
             }
+            if (
+                allLotsApartmentLayer.value &&
+                map.value.hasLayer(allLotsApartmentLayer.value)
+            ) {
+                map.value.removeLayer(allLotsApartmentLayer.value);
+            }
+            console.log("Lots hidden (zoom too far)");
         } else {
-            if (!map.value.hasLayer(allLotsLayer.value)) {
-                map.value.addLayer(allLotsLayer.value);
-                console.log("Lots visible");
+            // Show/hide underground layer based on toggle
+            if (allLotsUndergroundLayer.value) {
+                if (
+                    showUnderground.value &&
+                    !map.value.hasLayer(allLotsUndergroundLayer.value)
+                ) {
+                    map.value.addLayer(allLotsUndergroundLayer.value);
+                    console.log("Underground lots visible");
+                } else if (
+                    !showUnderground.value &&
+                    map.value.hasLayer(allLotsUndergroundLayer.value)
+                ) {
+                    map.value.removeLayer(allLotsUndergroundLayer.value);
+                    console.log("Underground lots hidden");
+                }
+            }
+
+            // Show/hide apartment layer based on toggle
+            if (allLotsApartmentLayer.value) {
+                if (
+                    showApartment.value &&
+                    !map.value.hasLayer(allLotsApartmentLayer.value)
+                ) {
+                    map.value.addLayer(allLotsApartmentLayer.value);
+                    console.log("Apartment lots visible");
+                } else if (
+                    !showApartment.value &&
+                    map.value.hasLayer(allLotsApartmentLayer.value)
+                ) {
+                    map.value.removeLayer(allLotsApartmentLayer.value);
+                    console.log("Apartment lots hidden");
+                }
             }
         }
     };
@@ -225,28 +326,57 @@ export function useMapLots() {
             const processedFeatures = processFeatures(data);
             dbGeoJsonLots.value = processedFeatures;
 
-            // Remove existing layer
-            if (allLotsLayer.value && map.value) {
-                map.value.removeLayer(allLotsLayer.value);
+            console.log("Total features:", dbGeoJsonLots.value.length);
+
+            // Remove existing layers
+            if (allLotsUndergroundLayer.value && map.value) {
+                map.value.removeLayer(allLotsUndergroundLayer.value);
+            }
+            if (allLotsApartmentLayer.value && map.value) {
+                map.value.removeLayer(allLotsApartmentLayer.value);
             }
 
-            // Only create layer if there are valid features
+            // Only create layers if there are valid features
             if (processedFeatures.length > 0) {
-                allLotsLayer.value = L.geoJSON(processedFeatures, {
-                    style: getLotStyle,
-                    onEachFeature: attachLotPopup,
-                });
+                // Separate lots by type
+                const { underground, apartment } =
+                    separateLotsByType(processedFeatures);
 
+                console.log(
+                    `Separated - Underground: ${underground.length}, Apartment: ${apartment.length}`
+                );
+
+                // Create underground layer
+                if (underground.length > 0) {
+                    allLotsUndergroundLayer.value = L.geoJSON(underground, {
+                        style: getLotStyle,
+                        onEachFeature: attachLotPopup,
+                    });
+                    console.log(
+                        `Created underground layer with ${underground.length} lots`
+                    );
+                }
+
+                // Create apartment layer
+                if (apartment.length > 0) {
+                    allLotsApartmentLayer.value = L.geoJSON(apartment, {
+                        style: getLotStyle,
+                        onEachFeature: attachLotPopup,
+                    });
+                    console.log(
+                        `Created apartment layer with ${apartment.length} lots`
+                    );
+                }
+
+                // Apply visibility based on current toggle state
                 updateLayerVisibility();
-                console.log(`Loaded ${processedFeatures.length} Lots`);
+
+                console.log(`Total lots loaded: ${processedFeatures.length}`);
             } else {
                 console.warn("No valid Lots found in GeoJSON data");
-                allLotsLayer.value = L.geoJSON([]); // Empty layer
             }
         } catch (err) {
             console.error("Error loading GeoJSON:", err);
-            // Create empty layer on error
-            allLotsLayer.value = L.geoJSON([]);
         }
     };
 
@@ -419,9 +549,13 @@ export function useMapLots() {
         map,
         editableLayers,
         allLotsLayer,
+        allLotsUndergroundLayer,
+        allLotsApartmentLayer,
         dbGeoJsonLots,
         newGeoJsonData,
         selectedLotId,
+        showUnderground,
+        showApartment,
 
         // Computed
         isSaveEnabled,
@@ -433,5 +567,7 @@ export function useMapLots() {
         refreshMap,
         saveLot,
         fetchDBGeoJson,
+        toggleUndergroundLayer,
+        toggleApartmentLayer,
     };
 }

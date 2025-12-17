@@ -55,58 +55,58 @@ class PanteonDataSeeder extends Seeder
 
     public function seedLot()
     {
-
         $geoJsonPath_Underground = public_path('data/lots_underground.geojson');
         $geoJsonPath_Appartment = public_path('data/lots_appartment.geojson');
 
-        if (!$geoJsonPath_Underground || !$geoJsonPath_Appartment) {
-            $this->command->error("GeoJSON file for lot underground not found at path: {$geoJsonPath_Underground}");
+        if (!file_exists($geoJsonPath_Underground) || !file_exists($geoJsonPath_Appartment)) {
+            $this->command->error("GeoJSON files not found");
             return;
         }
 
         $geoJsonData_underground = json_decode(file_get_contents($geoJsonPath_Underground), true);
-        $geoJsonData_appartment = json_decode(file_get_contents($geoJsonPath_Underground), true);
+        $geoJsonData_appartment = json_decode(file_get_contents($geoJsonPath_Appartment), true); // FIX: Was using Underground path
 
-
-        if (!$geoJsonData_underground['features'] || !$geoJsonData_appartment['features']) {
+        if (!isset($geoJsonData_underground['features']) || !isset($geoJsonData_appartment['features'])) {
             $this->command->error("Invalid GeoJSON format: 'features' key not found.");
             return;
         }
 
-        $this->command->info("Seeding sections from GeoJSON...");
+        $this->command->info("Seeding lots from GeoJSON...");
 
+        // Add lot_type to each feature's properties
+        // REFERENCE OPERATOR
+        foreach ($geoJsonData_underground['features'] as &$feature) {
+            $feature['properties']['lot_type'] = 'underground';
+        }
+        unset($feature); // Break reference
 
-        // Seed underground lots
-        foreach ($geoJsonData_underground['features'] as $feature) {
+        // REFERENCE OPERATOR
+        foreach ($geoJsonData_appartment['features'] as &$feature) {
+            $feature['properties']['lot_type'] = 'apartment';
+        }
+        unset($feature); // Break reference
+
+        // Merge features from both GeoJSON files
+        $allFeatures = array_merge(
+            $geoJsonData_underground['features'],
+            $geoJsonData_appartment['features']
+        );
+
+        // Insert lots
+        foreach ($allFeatures as $feature) {
             $attributes = $feature['properties'];
 
-            // holds the data from QGIS
-            $lot_underground = [
+            $lot = [
                 'section_id' => $attributes['section_id'],
-                'lot_type' => 'underground',
-                'coordinates' => json_encode($feature['geometry']),
+                'lot_type' => $attributes['lot_type'],
+                'coordinates' => $feature['geometry'],
             ];
 
-            // insert the other attributes using the factory definition & lot variable data
-            Lot::factory()->create($lot_underground);
+            Lot::factory()->create($lot);
         }
 
-        // Seed appartment lots
-        foreach ($geoJsonData_appartment['features'] as $feature) {
-            $attributes = $feature['properties'];
-
-            // holds the data from QGIS
-            $lot_appatment = [
-                'section_id' => $attributes['section_id'],
-                'lot_type' => 'apartment',
-                'coordinates' => json_encode($feature['geometry']),
-            ];
-
-            // insert the other attributes using the factory definition & lot variable data
-            Lot::factory()->create($lot_appatment);
-        }
-
-        $this->command->info("Sections imported: " . count($geoJsonData_underground['features']));
-        $this->command->info("Sections imported: " . count($geoJsonData_appartment['features']));
+        $this->command->info("Underground lots imported: " . count($geoJsonData_underground['features']));
+        $this->command->info("Appartment lots imported: " . count($geoJsonData_appartment['features']));
+        $this->command->info("Total lots imported: " . count($allFeatures));
     }
 }

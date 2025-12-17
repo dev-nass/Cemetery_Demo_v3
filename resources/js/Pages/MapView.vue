@@ -7,6 +7,31 @@
         <div class="control-panel">
             <h3 class="text-lg font-bold mb-2">Lot Controls</h3>
 
+            <!-- Layer Toggle Controls -->
+            <div class="mb-4 p-3 bg-gray-50 rounded">
+                <p class="text-sm font-semibold mb-2">Show Layers:</p>
+                <div class="flex flex-col gap-2">
+                    <label class="flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            v-model="showUnderground"
+                            @change="toggleUndergroundLayer(showUnderground)"
+                            class="mr-2 w-4 h-4"
+                        />
+                        <span class="text-sm">Underground Lots</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            v-model="showApartment"
+                            @change="toggleApartmentLayer(showApartment)"
+                            class="mr-2 w-4 h-4"
+                        />
+                        <span class="text-sm">Apartment Lots</span>
+                    </label>
+                </div>
+            </div>
+
             <!-- Selected Lot Info -->
             <div v-if="selectedLotId" class="mb-4 p-2 bg-blue-50 rounded">
                 <p class="text-sm font-semibold">
@@ -70,6 +95,8 @@ const {
     map,
     dbGeoJsonLots,
     selectedLotId,
+    showUnderground,
+    showApartment,
 
     // Computed
     isSaveEnabled,
@@ -79,6 +106,8 @@ const {
     initializeMap,
     refreshMap,
     saveLot,
+    toggleUndergroundLayer,
+    toggleApartmentLayer,
 } = useMapLots();
 
 onMounted(() => {
