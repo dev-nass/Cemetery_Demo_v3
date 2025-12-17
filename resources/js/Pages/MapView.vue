@@ -1,82 +1,134 @@
+<template>
+    <div class="map-wrapper">
+        <!-- Map Container -->
+        <div ref="mapContainer" id="map"></div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h3 class="text-lg font-bold mb-2">Lot Controls</h3>
+
+            <!-- Selected Lot Info -->
+            <div v-if="selectedLotId" class="mb-4 p-2 bg-blue-50 rounded">
+                <p class="text-sm font-semibold">
+                    Selected Lot: {{ selectedLotId }}
+                </p>
+            </div>
+
+            <!-- GeoJSON Output -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1"
+                    >Current GeoJSON:</label
+                >
+                <pre
+                    class="text-xs bg-gray-100 p-2 rounded overflow-auto max-h-32"
+                    >{{ geoJsonOutput }}</pre
+                >
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2">
+                <button
+                    @click="handleSave"
+                    :disabled="!isSaveEnabled"
+                    :class="[
+                        'px-4 py-2 rounded font-medium transition-colors',
+                        isSaveEnabled
+                            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed',
+                    ]"
+                >
+                    {{ isSaveEnabled ? "Save Lot" : "Draw a Lot First" }}
+                </button>
+
+                <button
+                    @click="refreshMap"
+                    class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded font-medium"
+                >
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-4 text-sm text-gray-600">
+                <p>Total Lots: {{ dbGeoJsonLots?.length || 0 }}</p>
+                <p class="text-xs mt-1">
+                    Tip: Shift+Click to edit existing lots
+                </p>
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup>
-import { ref } from "vue";
-import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
-import * as L from "leaflet";
-import "leaflet-draw";
+import { ref, onMounted } from "vue";
+import { useMapLots } from "../composables/useMap.js";
 
-// =========================================================
-// 1. IMPORT the Leaflet Marker Icon assets using ESM syntax
-// =========================================================
-import markerIconUrl from "leaflet/dist/images/marker-icon.png";
-import markerIconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
-import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
+const mapContainer = ref(null);
 
-// =========================================================
-// 2. APPLY the fix by merging options with the imported paths
-// =========================================================
-delete L.Icon.Default.prototype._getIconUrl;
+const {
+    // State
+    map,
+    dbGeoJsonLots,
+    selectedLotId,
 
-// You can use L.Icon.Default.mergeOptions or set options directly
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIconRetinaUrl,
-    iconUrl: markerIconUrl,
-    shadowUrl: markerShadowUrl,
-    // Add these for good measure, sometimes needed for Leaflet.Draw controls
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    tooltipAnchor: [16, -28],
-    shadowSize: [41, 41],
+    // Computed
+    isSaveEnabled,
+    geoJsonOutput,
+
+    // Methods
+    initializeMap,
+    refreshMap,
+    saveLot,
+} = useMapLots();
+
+onMounted(() => {
+    initializeMap(mapContainer.value);
 });
-// Often necessary when importing images
-L.Icon.Default.imagePath = "";
 
-const zoom = ref(10);
-const center = ref([51.505, -0.09]); // Example coordinates (London)
-const map = ref(null); // Reference to the LMap component
-
-const onMapReady = () => {
-    // 2. Get the raw Leaflet map instance from the ref
-    const leafletMap = map.value.leafletObject;
-
-    // 3. Initialize the Leaflet.Draw control
-    const drawnItems = new L.FeatureGroup();
-    leafletMap.addLayer(drawnItems);
-
-    const drawControl = new L.Control.Draw({
-        edit: {
-            featureGroup: drawnItems,
-        },
-        draw: {
-            polygon: true,
-            polyline: true,
-            circle: false, // Example: disable circle drawing
-            marker: true,
-        },
-    });
-
-    // 4. Add the control to the map
-    leafletMap.addControl(drawControl);
-
-    // 5. Set up the event listener for when a feature is created
-    leafletMap.on(L.Draw.Event.CREATED, (e) => {
-        const layer = e.layer;
-        drawnItems.addLayer(layer);
-
-        // IMPORTANT: Log the GeoJSON data so you can save it to your Laravel backend
-        console.log("New feature GeoJSON:", layer.toGeoJSON());
-    });
+const handleSave = async () => {
+    try {
+        await saveLot();
+        alert("Lot saved successfully!");
+    } catch (error) {
+        alert("Error saving lot: " + error.message);
+    }
 };
 </script>
 
-<template>
-    <div style="height: 600px; width: 100%">
-        <l-map ref="map" :zoom="zoom" :center="center" @ready="onMapReady">
-            <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                layer-type="base"
-                name="OpenStreetMap"
-            ></l-tile-layer>
-        </l-map>
-    </div>
-</template>
+<style scoped>
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.control-panel {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    max-width: 28rem;
+    z-index: 1000;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+}
+
+/* Ensure Leaflet container takes full size */
+:deep(.leaflet-container) {
+    width: 100%;
+    height: 100%;
+    font-family: inherit;
+}
+</style>
