@@ -4,7 +4,7 @@ import L from "leaflet";
 import "leaflet-draw";
 
 const MIN_RENDER_ZOOM = 20;
-const RENDER_DEBOUNCE_MS = 150;
+const RENDER_DEBOUNCE_MS = 550;
 
 export function useMapLots() {
     // Reactive state
@@ -70,22 +70,14 @@ export function useMapLots() {
             layer.bindPopup(popupContent);
 
             // Permanent tooltip label
-            if (feature.properties?.lot_id) {
-                layer.bindTooltip(String(feature.properties.lot_id), {
-                    permanent: true,
-                    direction: "center",
-                    className: "lot-label",
-                    interactive: false,
-                });
-            }
-        });
-
-        // Shift+Click to edit
-        layer.on("click", function (e) {
-            if (e.originalEvent.shiftKey) {
-                selectPolygonForEditing(layer);
-                L.DomEvent.stopPropagation(e);
-            }
+            // if (feature.properties?.lot_id) {
+            //     layer.bindTooltip(String(feature.properties.lot_id), {
+            //         permanent: true,
+            //         direction: "center",
+            //         className: "lot-label",
+            //         interactive: false,
+            //     });
+            // }
         });
     };
 

@@ -9,6 +9,7 @@ Route::get('/', function () {
 });
 
 Route::get('/map', fn() => Inertia::render('MapView'));
+Route::get('/practice-map', fn() => Inertia::render('PracticeMapView'));
 
 Route::controller(LotController::class)
     ->prefix('lot')
