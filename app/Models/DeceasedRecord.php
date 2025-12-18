@@ -9,4 +9,9 @@ class DeceasedRecord extends Model
 {
     /** @use HasFactory<\Database\Factories\DeceasedRecordFactory> */
     use HasFactory;
+
+    public function burialRecord()
+    {
+        return $this->hasOne(BurialRecord::class);
+    }
 }

@@ -17,7 +17,8 @@ class BurialRecordFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'burial_date' => $this->faker->date(),
+            'burial_time' => $this->faker->optional()->time(),
         ];
     }
 }

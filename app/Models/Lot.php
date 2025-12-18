@@ -18,4 +18,9 @@ class Lot extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    public function burialRecord()
+    {
+        return $this->hasOne(BurialRecord::class);
+    }
 }

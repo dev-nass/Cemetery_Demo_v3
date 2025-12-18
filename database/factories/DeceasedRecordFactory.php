@@ -17,7 +17,13 @@ class DeceasedRecordFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'first_name' => $this->faker->firstName(),
+            'middle_name' => $this->faker->optional()->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'date_of_birth' => $this->faker->optional()->date(),
+            'date_of_death' => $this->faker->date(),
+            'cause_of_death' => $this->faker->optional()->sentence(3),
+            'place_of_death' => $this->faker->optional()->city(),
         ];
     }
 }

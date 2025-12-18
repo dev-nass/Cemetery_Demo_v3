@@ -53,7 +53,7 @@ class PanteonDataSeeder extends Seeder
     }
 
 
-    public function seedLot()
+    private function seedLot()
     {
         $geoJsonPath_Underground = public_path('data/lots_underground.geojson');
         $geoJsonPath_Appartment = public_path('data/lots_appartment.geojson');
@@ -108,5 +108,10 @@ class PanteonDataSeeder extends Seeder
         $this->command->info("Underground lots imported: " . count($geoJsonData_underground['features']));
         $this->command->info("Appartment lots imported: " . count($geoJsonData_appartment['features']));
         $this->command->info("Total lots imported: " . count($allFeatures));
+    }
+
+    private function deceasedRecords()
+    {
+        // Implementation for seeding deceased records
     }
 }
