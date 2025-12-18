@@ -1,8 +1,8 @@
 import L from "leaflet";
-
 import { useMapState } from "@/stores/useMapState";
 
 const { lotsUndergroundLayer, lotsApartmentLayer } = useMapState();
+
 export function useFeatureProcessing() {
     /* traverse through DBGeoJson data and change 'multipolygon'
      to 'polygon' */
