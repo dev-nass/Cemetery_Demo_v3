@@ -1,12 +1,16 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
 import { usePracticeMap } from "../composables/usePracticeMap";
 
-const { initializeMap } = usePracticeMap();
+const { initializeMap, cleanupMap } = usePracticeMap();
 const mapContainer = ref(null);
 
 onMounted(() => {
     initializeMap(mapContainer.value);
+});
+
+onBeforeUnmount(() => {
+    cleanupMap(); // Clean up before component is destroyed
 });
 </script>
 

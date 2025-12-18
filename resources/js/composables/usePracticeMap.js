@@ -79,7 +79,20 @@ export function usePracticeMap() {
     //     alert("You clicked the map at " + e.latlng);
     // }
 
+    const cleanupMap = () => {
+        if (map.value) {
+            map.value.remove(); // Properly destroys map and removes all listeners
+            map.value = null;
+        }
+
+        // Clear layer references
+        entranceLayer.value = L.layerGroup();
+        lotsUndergroundLayer.value = L.layerGroup();
+        lotsApartmentLayer.value = L.layerGroup();
+    };
+
     return {
         initializeMap,
+        cleanupMap,
     };
 }

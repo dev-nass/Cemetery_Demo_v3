@@ -89,9 +89,8 @@ export function useFeatureProcessing() {
             const type = feature.properties.lot_type;
 
             const lotLayer = L.geoJSON(feature, {
-                onEachFeature: (feature, layer) => {
-                    layer.bindPopup(`Lot type: ${feature.properties.lot_type}`);
-                },
+                style: getLotStyle,
+                onEachFeature: attachLotPopup,
             });
 
             if (type === "underground") {
@@ -101,6 +100,51 @@ export function useFeatureProcessing() {
             } else {
                 console.warn("Unknown lot type:", type, feature);
             }
+        });
+    };
+
+    // lot styling
+    const getLotStyle = (feature) => {
+        const colors = {
+            available: "#90EE90",
+            occupied: "#FFB6C6",
+            reserved: "#FFE66D",
+        };
+
+        return {
+            fillColor: colors[feature.properties.status] || "#CCCCCC",
+            weight: 1,
+            color: "white",
+            fillOpacity: 0.7,
+        };
+    };
+
+    const attachLotPopup = (feature, layer) => {
+        layer.on("add", function () {
+            const layerId = layer._leaflet_id;
+
+            const popupContent = `
+                <strong>Lot: ${feature.properties.lot_id}</strong><br>
+                Section: ${feature.properties.section}<br>
+                Type: ${feature.properties.lot_type}<br>
+                Status: ${feature.properties.status}<br>
+                <button onclick="window.selectLotForEditing(${layerId})" 
+                    class="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    Edit This lot
+                </button>
+            `;
+
+            layer.bindPopup(popupContent);
+
+            // Permanent tooltip label
+            // if (feature.properties?.lot_id) {
+            //     layer.bindTooltip(String(feature.properties.lot_id), {
+            //         permanent: true,
+            //         direction: "center",
+            //         className: "lot-label",
+            //         interactive: false,
+            //     });
+            // }
         });
     };
 
