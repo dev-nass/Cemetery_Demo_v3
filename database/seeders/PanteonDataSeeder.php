@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\BurialRecord;
+use App\Models\DeceasedRecord;
 use App\Models\Lot;
 use App\Models\Section;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,6 +19,7 @@ class PanteonDataSeeder extends Seeder
     {
         $this->seedSections();
         $this->seedLot();
+        $this->deceasedRecords();
     }
 
     private function seedSections()
@@ -112,6 +115,17 @@ class PanteonDataSeeder extends Seeder
 
     private function deceasedRecords()
     {
-        // Implementation for seeding deceased records
+        $lots = Lot::with('section')->get();
+
+        foreach ($lots as $lot) {
+            $deceased = DeceasedRecord::factory()->create();
+
+            // Generate attributes from factory but save via relationship
+            $lot->burialRecord()->create(
+                BurialRecord::factory()->make([
+                    'deceased_record_id' => $deceased->id,
+                ])->toArray()
+            );
+        }
     }
 }
