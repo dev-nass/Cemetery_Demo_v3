@@ -118,14 +118,20 @@ class PanteonDataSeeder extends Seeder
         $lots = Lot::with('section')->get();
 
         foreach ($lots as $lot) {
-            $deceased = DeceasedRecord::factory()->create();
 
-            // Generate attributes from factory but save via relationship
-            $lot->burialRecord()->create(
-                BurialRecord::factory()->make([
-                    'deceased_record_id' => $deceased->id,
-                ])->toArray()
-            );
+            if (fake()->boolean(30)) {
+                $deceased = DeceasedRecord::factory()->create();
+
+                // Generate attributes from factory but save via relationship
+                $lot->burialRecord()->create(
+                    BurialRecord::factory()->make([
+                        'deceased_record_id' => $deceased->id,
+                    ])->toArray()
+                );
+
+                // Optional: Update lot status if it's occupied
+                $lot->update(['status' => 'Occupied']);
+            }
         }
     }
 }

@@ -18,7 +18,6 @@ class LotFactory extends Factory
     {
         return [
             'lot_number' => $this->faker->unique()->numerify('LOT-###'),
-            'status' => $this->faker->randomElement(['available', 'occupied', 'reserved']),
         ];
     }
 }

@@ -128,7 +128,9 @@ export function useFeatureProcessing() {
                 Section: ${feature.properties.section}<br>
                 Type: ${feature.properties.lot_type}<br>
                 Status: ${feature.properties.status}<br>
-                Fullname: ${feature.properties.deceased_record.full_name}<br>
+                Fullname: ${
+                    feature.properties.deceased_record?.full_name ?? "N/A"
+                }<br>
                 <button onclick="window.selectLotForEditing(${layerId})" 
                     class="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                     Edit This lot

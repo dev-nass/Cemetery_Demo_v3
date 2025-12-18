@@ -16,12 +16,13 @@ class LotController extends Controller
             // Prepare the burial data if it exists
             $burial = null;
             if ($lot->burialRecord) {
+                $deceased = $lot->burialRecord->deceasedRecord;
+
                 $burial = [
                     'deceased_record_id' => $lot->burialRecord->deceased_record_id,
-                    'full_name' => trim(
-                        ($lot->burialRecord->deceasedRecord->first_name ?? '') . ' ' .
-                        ($lot->burialRecord->deceasedRecord->last_name ?? '')
-                    ),
+                    'full_name' => $deceased
+                        ? trim("{$deceased->first_name} {$deceased->last_name}")
+                        : "N/A",
                     'burial_date' => $lot->burialRecord->burial_date,
                     'burial_time' => $lot->burialRecord->burial_time,
                 ];
