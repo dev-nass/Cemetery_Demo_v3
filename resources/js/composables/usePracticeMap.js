@@ -1,40 +1,70 @@
 import { ref } from "vue";
 import L from "leaflet";
 
-import { useMapState } from "./stores/useMapState";
+import { useMapState } from "@/stores/useMapState";
 import { useControl } from "./map/useControl";
+import { useDbGeoJson } from "./map/useDbGeoJson";
 
-const { map, googleLayer, entranceLayer } = useMapState();
+const {
+    map,
+    googleLayer,
+    entranceLayer,
+    lotsUndergroundLayer,
+    lotsApartmentLayer,
+} = useMapState();
 const { initializeLayerControl, initializeDrawControl } = useControl();
+const { fetchDBGeoJson } = useDbGeoJson();
 
 export function usePracticeMap() {
-    const initializeMap = (mapContainerElem) => {
+    const initializeMap = async (mapContainerElem) => {
         map.value = L.map(mapContainerElem).setView([14.3052681, 120.9758], 18);
 
         initializeLayers();
         googleLayer.value.addTo(map.value);
         entranceLayer.value.addTo(map.value);
+        lotsUndergroundLayer.value.addTo(map.value);
+        lotsApartmentLayer.value.addTo(map.value);
         markEntrance();
 
         // map.value.on("click", onMapClick);
         initializeLayerControl(
             map.value,
             { "Google Satellite": googleLayer.value }, // Base layers
-            { Entrance: entranceLayer.value } // Overlays
+            {
+                Entrance: entranceLayer.value,
+                Apartment: lotsApartmentLayer.value,
+                Underground: lotsUndergroundLayer.value,
+            } // Overlays
         );
         initializeDrawControl(map.value);
+
+        await fetchDBGeoJson();
+
+        // console.log(lotsUndergroundLayer.value.getLayers());
     };
 
     const initializeLayers = () => {
-        googleLayer.value = L.tileLayer(
-            "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            {
-                maxZoom: 30,
-                subdomains: ["mt0", "mt1", "mt2", "mt3"],
-            }
-        );
+        if (!googleLayer.value) {
+            googleLayer.value = L.tileLayer(
+                "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                {
+                    maxZoom: 30,
+                    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+                }
+            );
+        }
 
-        entranceLayer.value = L.layerGroup();
+        if (!entranceLayer.value) {
+            entranceLayer.value = L.layerGroup();
+        }
+
+        if (!lotsUndergroundLayer.value) {
+            lotsUndergroundLayer.value = L.layerGroup();
+        }
+
+        if (!lotsApartmentLayer.value) {
+            lotsApartmentLayer.value = L.layerGroup();
+        }
     };
 
     const markEntrance = () => {
