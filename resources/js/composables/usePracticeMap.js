@@ -26,7 +26,7 @@ export function usePracticeMap() {
         lotsApartmentLayer.value.addTo(map.value);
         markEntrance();
 
-        // map.value.on("click", onMapClick);
+        entranceLayer.value.on("click", onMapClick);
         initializeLayerControl(
             map.value,
             { "Google Satellite": googleLayer.value }, // Base layers
@@ -75,9 +75,9 @@ export function usePracticeMap() {
         marker.bindPopup("Here's the entrance");
     };
 
-    // function onMapClick(e) {
-    //     alert("You clicked the map at " + e.latlng);
-    // }
+    function onMapClick(e) {
+        alert("You clicked the map at " + e.latlng);
+    }
 
     const cleanupMap = () => {
         if (map.value) {

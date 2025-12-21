@@ -1,11 +1,14 @@
 import L from "leaflet";
+
 import { useMapState } from "@/stores/useMapState";
+import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 
 const { lotsUndergroundLayer, lotsApartmentLayer } = useMapState();
+const { selectedFeatureForm } = useMapSelectedFeatureState();
 
 export function useFeatureProcessing() {
     /* traverse through DBGeoJson data and change 'multipolygon'
-     to 'polygon' */
+   to 'polygon' */
     const processFeatures = (data) => {
         if (!data || !Array.isArray(data.features)) {
             console.warn("Invalid GeoJSON data structure");
@@ -90,7 +93,7 @@ export function useFeatureProcessing() {
 
             const lotLayer = L.geoJSON(feature, {
                 style: getLotStyle,
-                onEachFeature: attachLotPopup,
+                onEachFeature: onEachFeature,
             });
 
             if (type === "underground") {
@@ -101,6 +104,11 @@ export function useFeatureProcessing() {
                 console.warn("Unknown lot type:", type, feature);
             }
         });
+    };
+
+    const onEachFeature = (feature, layer) => {
+        attachLotPopup(feature, layer);
+        attachEventToSelectLot(feature, layer);
     };
 
     // lot styling
@@ -149,6 +157,17 @@ export function useFeatureProcessing() {
             //     });
             // }
         });
+    };
+
+    const attachEventToSelectLot = (feature, layer) => {
+        layer.on("click", function () {
+            handleSelectLotForEditing(feature.properties);
+        });
+    };
+
+    const handleSelectLotForEditing = (featureProperties) => {
+        Object.assign(selectedFeatureForm, featureProperties);
+        console.log("Select lot for editing:", selectedFeatureForm.lot_id);
     };
 
     return {

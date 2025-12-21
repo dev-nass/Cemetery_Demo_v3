@@ -1,9 +1,14 @@
 <script setup>
+import DrawerElem from "../Components/DrawerElem.vue";
 import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
+
 import { usePracticeMap } from "../composables/usePracticeMap";
+import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 
 const { initializeMap, cleanupMap } = usePracticeMap();
 const mapContainer = ref(null);
+
+const { selectedFeatureForm } = useMapSelectedFeatureState();
 
 onMounted(() => {
     initializeMap(mapContainer.value);
@@ -19,7 +24,7 @@ onBeforeUnmount(() => {
         <button
             command="show-modal"
             commandfor="drawer"
-            class="bg-blue-500 py-2 px-3 rounded-2xl"
+            class="border border-violet-500 text-violet-500 py-2 px-3 my-2 rounded-2xl transition duration-300 hover:bg-violet-500 hover:text-black"
         >
             Open Drawer
         </button>
@@ -80,7 +85,7 @@ onBeforeUnmount(() => {
                     </div>
 
                     <div
-                        class="relative flex h-full flex-col overflow-y-auto bg-gray-800 py-6 shadow-xl after:absolute after:inset-y-0 after:left-0 after:w-px after:bg-white/10"
+                        class="relative flex h-full flex-col overflow-y-auto bg-gray-700 py-6 shadow-xl after:absolute after:inset-y-0 after:left-0 after:w-px after:bg-white/10"
                     >
                         <div class="px-4 sm:px-6">
                             <h2
@@ -90,8 +95,22 @@ onBeforeUnmount(() => {
                                 Panel title
                             </h2>
                         </div>
-                        <div class="relative mt-6 flex-1 px-4 sm:px-6">
+                        <div
+                            class="relative mt-6 flex flex-col gap-y-5 px-4 sm:px-6"
+                        >
                             <!-- Your content -->
+                            <DrawerElem
+                                label="Lot ID"
+                                :modelValue="selectedFeatureForm.lot_id"
+                            />
+                            <DrawerElem
+                                label="Lot Number"
+                                :modelValue="selectedFeatureForm.lot_number"
+                            />
+                            <DrawerElem
+                                label="Lot Type"
+                                :modelValue="selectedFeatureForm.lot_type"
+                            />
                         </div>
                     </div>
                 </el-dialog-panel>

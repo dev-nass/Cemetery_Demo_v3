@@ -119,7 +119,7 @@ class PanteonDataSeeder extends Seeder
 
         foreach ($lots as $lot) {
 
-            if (fake()->boolean(30)) {
+            if (fake()->boolean(70)) {
                 $deceased = DeceasedRecord::factory()->create();
 
                 // Generate attributes from factory but save via relationship

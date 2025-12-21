@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lot;
-use Illuminate\Http\Request;
 
 class LotController extends Controller
 {
@@ -21,8 +20,8 @@ class LotController extends Controller
                 $burial = [
                     'deceased_record_id' => $lot->burialRecord->deceased_record_id,
                     'full_name' => $deceased
-                        ? trim("{$deceased->first_name} {$deceased->last_name}")
-                        : "N/A",
+                       ? trim("{$deceased->first_name} {$deceased->last_name}")
+                       : 'N/A',
                     'burial_date' => $lot->burialRecord->burial_date,
                     'burial_time' => $lot->burialRecord->burial_time,
                 ];
@@ -33,7 +32,7 @@ class LotController extends Controller
                 'geometry' => $lot->coordinates,
                 'properties' => [
                     'lot_id' => $lot->id,
-                    'section' => $lot->section->section_name ?? "N/A",
+                    'section' => $lot->section->section_name ?? 'N/A',
                     'lot_number' => $lot->lot_number,
                     'lot_type' => $lot->lot_type,
                     'status' => $lot->status,
