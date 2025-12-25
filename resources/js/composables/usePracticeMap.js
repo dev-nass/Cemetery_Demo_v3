@@ -27,6 +27,7 @@ export function usePracticeMap() {
         markEntrance();
 
         entranceLayer.value.on("click", onMapClick);
+
         initializeLayerControl(
             map.value,
             { "Google Satellite": googleLayer.value }, // Base layers

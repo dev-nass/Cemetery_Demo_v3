@@ -37,84 +37,54 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
-    <el-dialog>
-        <dialog
-            id="drawer"
-            aria-labelledby="drawer-title"
-            class="fixed inset-0 size-auto max-h-none max-w-none overflow-hidden bg-transparent not-open:hidden backdrop:bg-transparent"
-        >
-            <el-dialog-backdrop
-                class="absolute inset-0 bg-gray-900/50 transition-opacity duration-500 ease-in-out data-closed:opacity-0"
-            ></el-dialog-backdrop>
+    <dialog
+        id="drawer"
+        aria-labelledby="drawer-title"
+        class="fixed inset-0 size-auto max-h-none max-w-none overflow-hidden bg-transparent not-open:hidden backdrop:bg-transparent"
+    >
+        <!-- Backdrop -->
+        <div
+            class="absolute inset-0 bg-gray-900/50 transition-opacity duration-500 ease-in-out"
+        ></div>
 
+        <div tabindex="0" class="absolute inset-0 pl-10 sm:pl-16">
+            <!-- Panel -->
             <div
-                tabindex="0"
-                class="absolute inset-0 pl-10 focus:outline-none sm:pl-16"
+                class="relative ml-auto h-full max-w-md bg-gray-700 py-6 shadow-xl"
             >
-                <el-dialog-panel
-                    class="group/dialog-panel relative ml-auto block size-full max-w-md transform transition duration-500 ease-in-out data-closed:translate-x-full sm:duration-700"
+                <!-- Close button -->
+                <button
+                    type="button"
+                    @click="$event.target.closest('dialog').close()"
+                    class="absolute top-6 left-4 text-gray-400 hover:text-white"
                 >
-                    <!-- Close button, show/hide based on slide-over state. -->
-                    <div
-                        class="absolute top-0 left-0 -ml-8 flex pt-4 pr-2 duration-500 ease-in-out group-data-closed/dialog-panel:opacity-0 sm:-ml-10 sm:pr-4"
-                    >
-                        <button
-                            type="button"
-                            command="close"
-                            commandfor="drawer"
-                            class="relative rounded-md text-gray-400 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                        >
-                            <span class="absolute -inset-2.5"></span>
-                            <span class="sr-only">Close panel</span>
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                data-slot="icon"
-                                aria-hidden="true"
-                                class="size-6"
-                            >
-                                <path
-                                    d="M6 18 18 6M6 6l12 12"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
-                            </svg>
-                        </button>
-                    </div>
+                    ✕
+                </button>
 
-                    <div
-                        class="relative flex h-full flex-col overflow-y-auto bg-gray-700 py-6 shadow-xl after:absolute after:inset-y-0 after:left-0 after:w-px after:bg-white/10"
+                <div class="px-6">
+                    <h2
+                        id="drawer-title"
+                        class="ms-3 text-base font-semibold text-white"
                     >
-                        <div class="px-4 sm:px-6">
-                            <h2
-                                id="drawer-title"
-                                class="text-base font-semibold text-white"
-                            >
-                                Panel title
-                            </h2>
-                        </div>
-                        <div
-                            class="relative mt-6 flex flex-col gap-y-5 px-4 sm:px-6"
-                        >
-                            <!-- Your content -->
-                            <DrawerElem
-                                name="Lot ID"
-                                :modelValue="selectedFeatureForm.lot_id"
-                            />
-                            <DrawerElem
-                                name="Lot Number"
-                                :modelValue="selectedFeatureForm.lot_number"
-                            />
-                            <DrawerElem
-                                name="Lot Type"
-                                :modelValue="selectedFeatureForm.lot_type"
-                            />
-                        </div>
-                    </div>
-                </el-dialog-panel>
+                        Lot Information
+                    </h2>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-y-5 px-6">
+                    <DrawerElem
+                        name="Lot ID"
+                        :modelValue="selectedFeatureForm.lot_id"
+                    />
+                    <DrawerElem
+                        name="Lot Number"
+                        :modelValue="selectedFeatureForm.lot_number"
+                    />
+                    <DrawerElem
+                        name="Lot Type"
+                        :modelValue="selectedFeatureForm.lot_type"
+                    />
+                </div>
             </div>
-        </dialog>
-    </el-dialog>
+        </div>
+    </dialog>
 </template>

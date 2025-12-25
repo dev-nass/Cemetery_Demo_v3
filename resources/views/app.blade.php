@@ -1,4 +1,4 @@
-<html>
+<html class="bg-white dark:bg-gray-700">
 
 <head>
     <meta charset="utf-8" />

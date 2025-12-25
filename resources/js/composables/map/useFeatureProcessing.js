@@ -93,7 +93,7 @@ export function useFeatureProcessing() {
 
             const lotLayer = L.geoJSON(feature, {
                 style: getLotStyle,
-                onEachFeature: onEachFeature,
+                onEachFeature: onEachFeatureCustom,
             });
 
             if (type === "underground") {
@@ -106,7 +106,7 @@ export function useFeatureProcessing() {
         });
     };
 
-    const onEachFeature = (feature, layer) => {
+    const onEachFeatureCustom = (feature, layer) => {
         attachLotPopup(feature, layer);
         attachEventToSelectLot(feature, layer);
     };
@@ -122,7 +122,7 @@ export function useFeatureProcessing() {
         return {
             fillColor: colors[feature.properties.status] || "#CCCCCC",
             weight: 1,
-            color: "white",
+            color: "black",
             fillOpacity: 0.7,
         };
     };
