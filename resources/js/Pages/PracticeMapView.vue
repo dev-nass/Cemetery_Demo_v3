@@ -100,15 +100,15 @@ onBeforeUnmount(() => {
                         >
                             <!-- Your content -->
                             <DrawerElem
-                                label="Lot ID"
+                                name="Lot ID"
                                 :modelValue="selectedFeatureForm.lot_id"
                             />
                             <DrawerElem
-                                label="Lot Number"
+                                name="Lot Number"
                                 :modelValue="selectedFeatureForm.lot_number"
                             />
                             <DrawerElem
-                                label="Lot Type"
+                                name="Lot Type"
                                 :modelValue="selectedFeatureForm.lot_type"
                             />
                         </div>
