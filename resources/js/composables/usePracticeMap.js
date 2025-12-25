@@ -15,6 +15,9 @@ const {
 const { initializeLayerControl, initializeDrawControl } = useControl();
 const { fetchDBGeoJson } = useDbGeoJson();
 
+const MIN_RENDER_ZOOM = 20;
+const RENDER_DEBOUNCE_MS = 2000;
+
 export function usePracticeMap() {
     const initializeMap = async (mapContainerElem) => {
         map.value = L.map(mapContainerElem).setView([14.3052681, 120.9758], 18);
@@ -22,8 +25,9 @@ export function usePracticeMap() {
         initializeLayers();
         googleLayer.value.addTo(map.value);
         entranceLayer.value.addTo(map.value);
-        lotsUndergroundLayer.value.addTo(map.value);
-        lotsApartmentLayer.value.addTo(map.value);
+        // lotsUndergroundLayer.value.addTo(map.value);
+        // lotsApartmentLayer.value.addTo(map.value);
+        updateVisibility();
         markEntrance();
 
         entranceLayer.value.on("click", onMapClick);
@@ -80,6 +84,28 @@ export function usePracticeMap() {
         alert("You clicked the map at " + e.latlng);
     }
 
+    const updateVisibility = () => {
+        if (!map.value) return;
+
+        const zoom = map.value.getZoom();
+
+        console.log("Lots hidden (zoom too far)");
+
+        // too far
+        if (zoom < MIN_RENDER_ZOOM) {
+            map.value.removeLayer(lotsUndergroundLayer.value);
+            map.value.removeLayer(lotsApartmentLayer.value);
+
+            console.log("Lots hidden (zoom too far)");
+        } else {
+            lotsUndergroundLayer.value.addTo(map.value);
+            lotsApartmentLayer.value.addTo(map.value);
+        }
+
+        console.log(zoom);
+    };
+
+    // properly destroys the map each render; used in View
     const cleanupMap = () => {
         if (map.value) {
             map.value.remove(); // Properly destroys map and removes all listeners
@@ -91,6 +117,10 @@ export function usePracticeMap() {
         lotsUndergroundLayer.value = L.layerGroup();
         lotsApartmentLayer.value = L.layerGroup();
     };
+
+    setInterval(() => {
+        updateVisibility();
+    }, RENDER_DEBOUNCE_MS);
 
     return {
         initializeMap,
