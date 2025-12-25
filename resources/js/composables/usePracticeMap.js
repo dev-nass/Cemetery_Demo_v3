@@ -11,6 +11,8 @@ const {
     entranceLayer,
     lotsUndergroundLayer,
     lotsApartmentLayer,
+    showUnderground,
+    showApartment,
 } = useMapState();
 const { initializeLayerControl, initializeDrawControl } = useControl();
 const { fetchDBGeoJson } = useDbGeoJson();
@@ -32,16 +34,18 @@ export function usePracticeMap() {
 
         entranceLayer.value.on("click", onMapClick);
 
-        initializeLayerControl(
-            map.value,
-            { "Google Satellite": googleLayer.value }, // Base layers
-            {
-                Entrance: entranceLayer.value,
-                Apartment: lotsApartmentLayer.value,
-                Underground: lotsUndergroundLayer.value,
-            } // Overlays
-        );
+        // initializeLayerControl(
+        //     map.value,
+        //     { "Google Satellite": googleLayer.value }, // Base layers
+        //     {
+        //         Entrance: entranceLayer.value,
+        //         Apartment: lotsApartmentLayer.value,
+        //         Underground: lotsUndergroundLayer.value,
+        //     } // Overlays
+        // );
         initializeDrawControl(map.value);
+
+        map.value.on("zoomend", updateVisibility);
 
         await fetchDBGeoJson();
 
@@ -89,20 +93,32 @@ export function usePracticeMap() {
 
         const zoom = map.value.getZoom();
 
-        console.log("Lots hidden (zoom too far)");
-
         // too far
         if (zoom < MIN_RENDER_ZOOM) {
             map.value.removeLayer(lotsUndergroundLayer.value);
             map.value.removeLayer(lotsApartmentLayer.value);
 
             console.log("Lots hidden (zoom too far)");
-        } else {
-            lotsUndergroundLayer.value.addTo(map.value);
-            lotsApartmentLayer.value.addTo(map.value);
+        }
+        // right zoom
+        else {
+            console.log("right zoom");
+            if (showUnderground.value && showApartment.value) {
+                console.log("both");
+                lotsUndergroundLayer.value.addTo(map.value);
+                lotsApartmentLayer.value.addTo(map.value);
+            } else if (showUnderground.value && !showApartment.value) {
+                console.log("underground");
+                lotsUndergroundLayer.value.addTo(map.value);
+                map.value.removeLayer(lotsApartmentLayer.value);
+            } else if (!showUnderground.value && showApartment.value) {
+                console.log("apartment");
+                lotsApartmentLayer.value.addTo(map.value);
+                map.value.removeLayer(lotsUndergroundLayer.value);
+            }
         }
 
-        console.log(zoom);
+        // console.log(zoom);
     };
 
     // properly destroys the map each render; used in View
@@ -118,7 +134,10 @@ export function usePracticeMap() {
         lotsApartmentLayer.value = L.layerGroup();
     };
 
+    // not used because the logic needs reactive state TRUE OR FALSE
+    // continuously calls the updateVisibility
     setInterval(() => {
+        console.log("updating...");
         updateVisibility();
     }, RENDER_DEBOUNCE_MS);
 

@@ -8,12 +8,12 @@ export function useControl() {
      *  -   baseLayers:     for tile layer (google map view for this instance).
      *  -   overlay:        additional layers that will be passed by useMap.js.
      */
-    const initializeLayerControl = (mapInstance, baseLayers, overlays) => {
-        if (!mapInstance) return;
-        if (!baseLayers || !overlays) return;
+    // const initializeLayerControl = (mapInstance, baseLayers, overlays) => {
+    //     if (!mapInstance) return;
+    //     if (!baseLayers || !overlays) return;
 
-        L.control.layers(baseLayers, overlays).addTo(mapInstance);
-    };
+    //     L.control.layers(baseLayers, overlays).addTo(mapInstance);
+    // };
 
     /**
      * Paramters:
@@ -45,7 +45,7 @@ export function useControl() {
     };
 
     return {
-        initializeLayerControl,
+        // initializeLayerControl,
         initializeDrawControl,
     };
 }

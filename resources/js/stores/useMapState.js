@@ -9,6 +9,9 @@ const lotsUndergroundLayer = ref(L.layerGroup());
 const lotsApartmentLayer = ref(L.layerGroup());
 const dbGeoJsonLots = ref([]);
 
+const showUnderground = ref(true);
+const showApartment = ref(true);
+
 export function useMapState() {
     return {
         map,
@@ -19,5 +22,8 @@ export function useMapState() {
         lotsUndergroundLayer,
 
         dbGeoJsonLots,
+
+        showUnderground,
+        showApartment,
     };
 }

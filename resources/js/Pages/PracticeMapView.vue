@@ -2,6 +2,7 @@
 import DrawerElem from "../Components/DrawerElem.vue";
 import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
 
+import { useMapState } from "../stores/useMapState";
 import { usePracticeMap } from "../composables/usePracticeMap";
 import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 
@@ -9,6 +10,7 @@ const { initializeMap, cleanupMap } = usePracticeMap();
 const mapContainer = ref(null);
 
 const { selectedFeatureForm } = useMapSelectedFeatureState();
+const { showUnderground, showApartment } = useMapState();
 
 onMounted(() => {
     initializeMap(mapContainer.value);
@@ -20,6 +22,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+    <input v-model="showUnderground" type="checkbox" />
+    <input v-model="showApartment" type="checkbox" />
     <section class="h-dvh w-screen">
         <button
             command="show-modal"
