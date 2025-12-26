@@ -1,7 +1,7 @@
 <script setup>
 import DrawerElem from "../Components/DrawerElem.vue";
 import ModalElem from "../Components/ModalElem.vue";
-import { ref, onMounted, onUnmounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onUnmounted, onBeforeUnmount, computed } from "vue";
 
 import { useMapState } from "../stores/useMapState";
 import { usePracticeMap } from "../composables/usePracticeMap";
@@ -11,7 +11,14 @@ const { initializeMap, cleanupMap } = usePracticeMap();
 const mapContainer = ref(null);
 
 const { selectedFeatureForm } = useMapSelectedFeatureState();
-const { showUnderground, showApartment } = useMapState();
+const { showUnderground, showApartment, uniqueTypes, lotVisibility } =
+    useMapState();
+
+// Event Handler
+const onChangeVisibility = (type) => {
+    const current = lotVisibility.value.get(type) ?? false;
+    lotVisibility.value.set(type, !current);
+};
 
 onMounted(() => {
     initializeMap(mapContainer.value);
@@ -170,7 +177,21 @@ onBeforeUnmount(() => {
                                     <div
                                         class="flex space-x-2 text-sm text-gray-400"
                                     >
-                                        <ModalElem
+                                        <div
+                                            v-for="type in uniqueTypes"
+                                            :key="type"
+                                        >
+                                            <ModalElem
+                                                :name="type"
+                                                :modelValue="
+                                                    lotVisibility.get(type)
+                                                "
+                                                @update:modelValue="
+                                                    onChangeVisibility(type)
+                                                "
+                                            />
+                                        </div>
+                                        <!-- <ModalElem
                                             name="underground"
                                             v-model="showUnderground"
                                         />
@@ -178,7 +199,7 @@ onBeforeUnmount(() => {
                                         <ModalElem
                                             name="apartment"
                                             v-model="showApartment"
-                                        />
+                                        /> -->
                                     </div>
                                 </div>
                             </div>

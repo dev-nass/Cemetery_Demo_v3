@@ -3,7 +3,13 @@ import L from "leaflet";
 import { useMapState } from "@/stores/useMapState";
 import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 
-const { lotsUndergroundLayer, lotsApartmentLayer } = useMapState();
+const {
+    uniqueTypes,
+    lotsUndergroundLayer,
+    lotsApartmentLayer,
+    lotLayers,
+    lotVisibility,
+} = useMapState();
 const { selectedFeatureForm } = useMapSelectedFeatureState();
 
 export function useFeatureProcessing() {
@@ -80,8 +86,22 @@ export function useFeatureProcessing() {
             return;
         }
 
-        lotsUndergroundLayer.value.clearLayers();
-        lotsApartmentLayer.value.clearLayers();
+        // lotsUndergroundLayer.value.clearLayers();
+        // lotsApartmentLayer.value.clearLayers();
+
+        uniqueTypes.value = [
+            ...new Set(features.map((feature) => feature.properties.lot_type)),
+        ];
+
+        // console.log(uniqueTypes.value);
+
+        uniqueTypes.value.forEach((type) => {
+            // console.log(type);
+            lotLayers.value.set(type, L.layerGroup());
+            lotVisibility.value.set(type, true);
+        });
+
+        // console.log(lotLayers.value);
 
         features.forEach((feature) => {
             if (!feature.properties?.lot_type) {
@@ -91,18 +111,22 @@ export function useFeatureProcessing() {
 
             const type = feature.properties.lot_type;
 
-            const lotLayer = L.geoJSON(feature, {
+            const lot = L.geoJSON(feature, {
                 style: getLotStyle,
                 onEachFeature: onEachFeatureCustom,
             });
 
-            if (type === "underground") {
-                lotLayer.addTo(lotsUndergroundLayer.value);
-            } else if (type === "apartment") {
-                lotLayer.addTo(lotsApartmentLayer.value);
-            } else {
-                console.warn("Unknown lot type:", type, feature);
-            }
+            lot.addTo(lotLayers.value.get(type));
+
+            // lotLayers.set(type, lot);
+
+            // if (type === "underground") {
+            //     lotLayer.addTo(lotsUndergroundLayer.value);
+            // } else if (type === "apartment") {
+            //     lotLayer.addTo(lotsApartmentLayer.value);
+            // } else {
+            //     console.warn("Unknown lot type:", type, feature);
+            // }
         });
     };
 

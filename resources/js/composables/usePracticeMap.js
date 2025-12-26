@@ -11,6 +11,9 @@ const {
     entranceLayer,
     lotsUndergroundLayer,
     lotsApartmentLayer,
+    uniqueTypes,
+    lotLayers,
+    lotVisibility,
     showUnderground,
     showApartment,
 } = useMapState();
@@ -102,19 +105,28 @@ export function usePracticeMap() {
         }
         // right zoom
         else {
-            if (showUnderground.value && showApartment.value) {
-                console.log("both");
-                lotsUndergroundLayer.value.addTo(map.value);
-                lotsApartmentLayer.value.addTo(map.value);
-            } else if (showUnderground.value && !showApartment.value) {
-                console.log("underground");
-                lotsUndergroundLayer.value.addTo(map.value);
-                map.value.removeLayer(lotsApartmentLayer.value);
-            } else if (!showUnderground.value && showApartment.value) {
-                console.log("apartment");
-                lotsApartmentLayer.value.addTo(map.value);
-                map.value.removeLayer(lotsUndergroundLayer.value);
-            }
+            uniqueTypes.value.forEach((type) => {
+                if (lotVisibility.value.get(type) === true) {
+                    lotLayers.value.get(type).addTo(map.value);
+                } else {
+                    map.value.removeLayer(lotLayers.value.get(type));
+                }
+            });
+            // lotLayers.value.get("underground").addTo(map.value);
+            // console.log(lotLayers.value.get("underground"));
+            // if (showUnderground.value && showApartment.value) {
+            //     console.log("both");
+            //     lotsUndergroundLayer.value.addTo(map.value);
+            //     lotsApartmentLayer.value.addTo(map.value);
+            // } else if (showUnderground.value && !showApartment.value) {
+            //     console.log("underground");
+            //     lotsUndergroundLayer.value.addTo(map.value);
+            //     map.value.removeLayer(lotsApartmentLayer.value);
+            // } else if (!showUnderground.value && showApartment.value) {
+            //     console.log("apartment");
+            //     lotsApartmentLayer.value.addTo(map.value);
+            //     map.value.removeLayer(lotsUndergroundLayer.value);
+            // }
         }
 
         // console.log(zoom);
