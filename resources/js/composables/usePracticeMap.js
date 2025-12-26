@@ -102,7 +102,6 @@ export function usePracticeMap() {
         }
         // right zoom
         else {
-            console.log("right zoom");
             if (showUnderground.value && showApartment.value) {
                 console.log("both");
                 lotsUndergroundLayer.value.addTo(map.value);
