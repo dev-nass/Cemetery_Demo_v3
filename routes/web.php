@@ -11,8 +11,8 @@ Route::get('/', function () {
 Route::get('/map', fn() => Inertia::render('MapView'));
 Route::get('/practice-map', fn() => Inertia::render('PracticeMapView'));
 
-Route::controller(LotController::class)
-    ->prefix('lot')
+Route::controller(LotController::class)->prefix('lot')
     ->group(function () {
+        Route::get('/search', 'search')->name('lots.search');
         Route::get('/geojson', 'geoJson')->name('lots.geojson');
     });

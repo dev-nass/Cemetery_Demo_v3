@@ -1,18 +1,23 @@
 <script setup>
 import DrawerElem from "../Components/DrawerElem.vue";
 import ModalElem from "../Components/ModalElem.vue";
+import Search from "../Components/Search.vue";
 import { ref, onMounted, onUnmounted, onBeforeUnmount, computed } from "vue";
 
-import { useMapState } from "../stores/useMapState";
+import { useMapState } from "@/stores/useMapState";
 import { usePracticeMap } from "../composables/usePracticeMap";
 import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
+import { useMapSearchState } from "@/stores/useMapSearchState";
 
+// Composables
 const { initializeMap, cleanupMap } = usePracticeMap();
 const mapContainer = ref(null);
 
+// Stores (State)
 const { selectedFeatureForm } = useMapSelectedFeatureState();
 const { showUnderground, showApartment, uniqueTypes, lotVisibility } =
     useMapState();
+const { search, suggestions, fetchSuggestions } = useMapSearchState();
 
 // Event Handler
 const onChangeVisibility = (type) => {
@@ -40,6 +45,11 @@ onBeforeUnmount(() => {
             >
                 Open Drawer
             </button>
+            <Search
+                v-model="search"
+                :suggestions="suggestions"
+                @input="fetchSuggestions"
+            />
             <button
                 command="show-modal"
                 commandfor="dialog"
