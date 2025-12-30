@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+
 const showSuggestions = ref(false);
 
 const props = defineProps({
@@ -8,11 +9,12 @@ const props = defineProps({
         required: true,
     },
     suggestions: {
-        type: Object,
+        type: Array,
+        default: () => [],
     },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "select-suggestion"]);
 
 const onInput = (e) => {
     emit("update:modelValue", e.target.value);
@@ -37,6 +39,7 @@ const notFocus = () => {
                 name="q"
                 :value="modelValue"
                 placeholder="Search name or lot ..."
+                autocomplete="off"
                 @input="onInput"
                 @focus="onFocus"
                 @blur="notFocus"
@@ -46,10 +49,12 @@ const notFocus = () => {
         <div
             v-if="showSuggestions"
             :class="{ invisible: !suggestions.length }"
-            class="absolute z-999 bg-gray-700 py-2 px-3 outline-1 -outline-offset-1 outline-white/10 rounded-b-lg"
+            class="absolute z-999 w-full bg-gray-700 py-2 px-3 outline-1 -outline-offset-1 outline-white/10 rounded-b-lg"
         >
             <p
                 v-for="suggestion in suggestions"
+                :key="suggestion.id"
+                @mousedown.prevent="emit('select-suggestion', suggestion)"
                 class="rounded-md px-2.5 py-2 text-sm text-white hover:bg-white/20"
             >
                 {{ suggestion.first_name + " " + suggestion.last_name }}

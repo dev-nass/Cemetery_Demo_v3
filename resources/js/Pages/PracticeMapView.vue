@@ -10,16 +10,17 @@ import { useSearch } from "../composables/map/useSearch";
 import { useMapState } from "@/stores/useMapState";
 import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 import { useMapSearchState } from "@/stores/useMapSearchState";
-// Composables
-const { initializeMap, cleanupMap } = usePracticeMap();
-const { fetchSuggestions } = useSearch();
-const mapContainer = ref(null);
 
 // Stores (State)
 const { selectedFeatureForm } = useMapSelectedFeatureState();
-const { showUnderground, showApartment, uniqueTypes, lotVisibility } =
+const { map, showUnderground, showApartment, uniqueTypes, lotVisibility } =
     useMapState();
 const { search, suggestions } = useMapSearchState();
+
+// Composables
+const { initializeMap, cleanupMap } = usePracticeMap();
+const { fetchSuggestions, showSearchResult } = useSearch(map);
+const mapContainer = ref(null);
 
 // Event Handler
 const onChangeVisibility = (type) => {
@@ -51,6 +52,7 @@ onBeforeUnmount(() => {
                 v-model="search"
                 :suggestions="suggestions"
                 @input="fetchSuggestions"
+                @select-suggestion="showSearchResult"
             />
             <button
                 command="show-modal"

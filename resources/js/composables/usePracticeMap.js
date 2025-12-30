@@ -4,6 +4,7 @@ import L from "leaflet";
 import { useMapState } from "@/stores/useMapState";
 import { useControl } from "./map/useControl";
 import { useDbGeoJson } from "./map/useDbGeoJson";
+import { useMapSearchState } from "../stores/useMapSearchState";
 
 const {
     map,
@@ -19,6 +20,8 @@ const {
 } = useMapState();
 const { initializeLayerControl, initializeDrawControl } = useControl();
 const { fetchDBGeoJson } = useDbGeoJson();
+
+const { searchResultLayer } = useMapSearchState();
 
 const MIN_RENDER_ZOOM = 20;
 const RENDER_DEBOUNCE_MS = 2000;
@@ -98,20 +101,32 @@ export function usePracticeMap() {
 
         // too far
         if (zoom < MIN_RENDER_ZOOM) {
-            map.value.removeLayer(lotsUndergroundLayer.value);
-            map.value.removeLayer(lotsApartmentLayer.value);
+            // map.value.removeLayer(lotsUndergroundLayer.value);
+            // map.value.removeLayer(lotsApartmentLayer.value);
+            cleanupLayers();
 
             console.log("Lots hidden (zoom too far)");
         }
         // right zoom
         else {
-            uniqueTypes.value.forEach((type) => {
-                if (lotVisibility.value.get(type) === true) {
-                    lotLayers.value.get(type).addTo(map.value);
-                } else {
-                    map.value.removeLayer(lotLayers.value.get(type));
+            if (searchResultLayer.value.getLayers().length > 0) {
+                // SEARCH MODE → only show search result
+                cleanupLayers();
+
+                if (!map.value.hasLayer(searchResultLayer.value)) {
+                    searchResultLayer.value.addTo(map.value);
                 }
-            });
+
+                console.log("Search result visible");
+            } else {
+                uniqueTypes.value.forEach((type) => {
+                    if (lotVisibility.value.get(type) === true) {
+                        lotLayers.value.get(type).addTo(map.value);
+                    } else {
+                        map.value.removeLayer(lotLayers.value.get(type));
+                    }
+                });
+            }
             // lotLayers.value.get("underground").addTo(map.value);
             // console.log(lotLayers.value.get("underground"));
             // if (showUnderground.value && showApartment.value) {
@@ -132,6 +147,12 @@ export function usePracticeMap() {
         // console.log(zoom);
     };
 
+    const cleanupLayers = () => {
+        uniqueTypes.value.forEach((type) => {
+            map.value.removeLayer(lotLayers.value.get(type));
+        });
+    };
+
     // properly destroys the map each render; used in View
     const cleanupMap = () => {
         if (map.value) {
@@ -145,7 +166,6 @@ export function usePracticeMap() {
         lotsApartmentLayer.value = L.layerGroup();
     };
 
-    // not used because the logic needs reactive state TRUE OR FALSE
     // continuously calls the updateVisibility
     setInterval(() => {
         console.log("updating...");
