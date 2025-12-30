@@ -4,20 +4,22 @@ import ModalElem from "../Components/ModalElem.vue";
 import Search from "../Components/Search.vue";
 import { ref, onMounted, onUnmounted, onBeforeUnmount, computed } from "vue";
 
-import { useMapState } from "@/stores/useMapState";
 import { usePracticeMap } from "../composables/usePracticeMap";
+import { useSearch } from "../composables/map/useSearch";
+
+import { useMapState } from "@/stores/useMapState";
 import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 import { useMapSearchState } from "@/stores/useMapSearchState";
-
 // Composables
 const { initializeMap, cleanupMap } = usePracticeMap();
+const { fetchSuggestions } = useSearch();
 const mapContainer = ref(null);
 
 // Stores (State)
 const { selectedFeatureForm } = useMapSelectedFeatureState();
 const { showUnderground, showApartment, uniqueTypes, lotVisibility } =
     useMapState();
-const { search, suggestions, fetchSuggestions } = useMapSearchState();
+const { search, suggestions } = useMapSearchState();
 
 // Event Handler
 const onChangeVisibility = (type) => {
