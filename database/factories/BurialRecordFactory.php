@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Lot>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BurialRecord>
  */
-class LotFactory extends Factory
+class BurialRecordFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,8 @@ class LotFactory extends Factory
     public function definition(): array
     {
         return [
-            'lot_number' => $this->faker->unique()->numerify('LOT-###'),
+            'burial_date' => $this->faker->date(),
+            'burial_time' => $this->faker->optional()->time(),
         ];
     }
 }

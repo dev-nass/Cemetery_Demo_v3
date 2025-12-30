@@ -1,6 +1,8 @@
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { Link } from "@inertiajs/vue3";
+import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
 
 createInertiaApp({
     resolve: (name) => {

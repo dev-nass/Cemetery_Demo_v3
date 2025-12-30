@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->json('coordinates');
             $table->integer('total_capacity');
-            $table->integer('occupied_lots')->default(0);
             $table->enum('status', ['active', 'inactive', 'full'])->default('active');
             $table->timestamps();
         });

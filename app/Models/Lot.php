@@ -9,4 +9,18 @@ class Lot extends Model
 {
     /** @use HasFactory<\Database\Factories\LotFactory> */
     use HasFactory;
+
+    protected $casts = [
+        'coordinates' => 'array', // or 'json'
+    ];
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+    public function burialRecord()
+    {
+        return $this->hasOne(BurialRecord::class);
+    }
 }

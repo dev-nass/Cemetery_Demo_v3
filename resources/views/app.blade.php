@@ -1,9 +1,10 @@
-<html>
+<html class="bg-white dark:bg-gray-700">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @vite('resources/js/app.js')
+    @routes
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @inertiaHead
 </head>
 

@@ -9,4 +9,9 @@ class Section extends Model
 {
     /** @use HasFactory<\Database\Factories\SectionFactory> */
     use HasFactory;
+
+    public function lots()
+    {
+        return $this->hasMany(Lot::class);
+    }
 }
