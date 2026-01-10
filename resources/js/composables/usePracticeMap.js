@@ -65,7 +65,7 @@ export function usePracticeMap() {
                 {
                     maxZoom: 30,
                     subdomains: ["mt0", "mt1", "mt2", "mt3"],
-                }
+                },
             );
         }
 
@@ -84,7 +84,7 @@ export function usePracticeMap() {
 
     const markEntrance = () => {
         const marker = L.marker([14.304631, 120.975636]).addTo(
-            entranceLayer.value
+            entranceLayer.value,
         );
 
         marker.bindPopup("Here's the entrance");

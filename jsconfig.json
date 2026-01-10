@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./resources/js/*"],
+            "ziggy-js": ["./vendor/tightenco/ziggy"]
+        },
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "jsx": "preserve",
+        "jsxImportSource": "vue",
+        "allowJs": true,
+        "checkJs": false,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": ["esnext", "dom"],
+        "types": ["vite/client", "node"]
+    },
+    "include": [
+        "resources/js/**/*",
+        "resources/js/**/*.vue",
+        "resources/js/**/*.js",
+        "resources/js/**/*.ts",
+        "resources/js/**/*.jsx",
+        "resources/js/**/*.tsx",
+        "resources/js/types/**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "vendor",
+        "public",
+        "storage",
+        "bootstrap/cache"
+    ]
+}

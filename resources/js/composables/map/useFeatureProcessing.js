@@ -31,7 +31,7 @@ export function useFeatureProcessing() {
                     if (!isValid) {
                         console.warn(
                             "Skipping feature with null/missing geometry",
-                            feature
+                            feature,
                         );
                     }
 
@@ -163,7 +163,7 @@ export function useFeatureProcessing() {
                 Fullname: ${
                     feature.properties.deceased_record?.full_name ?? "N/A"
                 }<br>
-                <button onclick="window.selectLotForEditing(${layerId})" 
+                <button onclick="window.selectLotForEditing(${layerId})"
                     class="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                     Edit This lot
                 </button>
@@ -179,8 +179,8 @@ export function useFeatureProcessing() {
             //         className: "lot-label",
             //         interactive: false,
             //     });
-            // }
         });
+        // }
     };
 
     const attachEventToSelectLot = (feature, layer) => {
