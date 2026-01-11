@@ -12,6 +12,8 @@ const {
     entranceLayer,
     lotsUndergroundLayer,
     lotsApartmentLayer,
+    sectionLayer,
+    sectionVisibility,
     uniqueTypes,
     lotLayers,
     lotVisibility,
@@ -19,7 +21,7 @@ const {
     showApartment,
 } = useMapState();
 const { initializeLayerControl, initializeDrawControl } = useControl();
-const { fetchDBGeoJson } = useDbGeoJson();
+const { fetchLotsDBGeoJson, fetchSectionsDBGeoJson } = useDbGeoJson();
 
 const { searchResultLayer } = useMapSearchState();
 
@@ -53,7 +55,8 @@ export function usePracticeMap() {
 
         map.value.on("zoomend", updateVisibility);
 
-        await fetchDBGeoJson();
+        await fetchLotsDBGeoJson();
+        await fetchSectionsDBGeoJson();
 
         // console.log(lotsUndergroundLayer.value.getLayers());
     };
@@ -119,6 +122,7 @@ export function usePracticeMap() {
 
                 console.log("Search result visible");
             } else {
+                sectionLayer.value.addTo(map.value);
                 uniqueTypes.value.forEach((type) => {
                     if (lotVisibility.value.get(type) === true) {
                         lotLayers.value.get(type).addTo(map.value);

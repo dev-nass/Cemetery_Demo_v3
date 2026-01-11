@@ -305,7 +305,7 @@ export function useMapLots() {
     };
 
     // Fetch GeoJSON from database
-    const fetchDBGeoJson = async () => {
+    const fetchLotsDBGeoJson = async () => {
         try {
             const response = await fetch(route("lots.geojson"));
 
@@ -401,7 +401,7 @@ export function useMapLots() {
         setupZoomHandler();
 
         // Fetch data
-        fetchDBGeoJson();
+        fetchLotsDBGeoJson();
 
         // Make select function globally accessible
         window.selectLotForEditing = selectPolygonForEditing;
@@ -506,7 +506,7 @@ export function useMapLots() {
         editableLayers.value?.clearLayers();
         newGeoJsonData.value = null;
         selectedLotId.value = null;
-        fetchDBGeoJson();
+        fetchLotsDBGeoJson();
         console.log("Map data refreshed");
     };
 
@@ -558,7 +558,7 @@ export function useMapLots() {
         selectPolygonForEditing,
         refreshMap,
         saveLot,
-        fetchDBGeoJson,
+        fetchLotsDBGeoJson,
         toggleUndergroundLayer,
         toggleApartmentLayer,
     };

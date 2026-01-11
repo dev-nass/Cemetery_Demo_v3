@@ -4,6 +4,8 @@ import { useMapState } from "@/stores/useMapState";
 import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState";
 
 const {
+    sectionLayer,
+    sectionVisibility,
     uniqueTypes,
     lotsUndergroundLayer,
     lotsApartmentLayer,
@@ -130,9 +132,41 @@ export function useFeatureProcessing() {
         });
     };
 
+    const separateSections = (features) => {
+        if (!Array.isArray(features) || features.length === 0) {
+            console.warn("No section features to render");
+            return;
+        }
+
+        features.forEach((feature) => {
+            // if (!feature.properties?.lot_type) {
+            //     console.warn("Feature missing lot_type:", feature);
+            //     return;
+            // }
+
+            const section = L.geoJSON(feature, {
+                style: getSectionStyle,
+                onEachFeature: onEachFeatureCustom,
+            });
+
+            section.addTo(sectionLayer.value);
+        });
+    };
+
     const onEachFeatureCustom = (feature, layer) => {
         attachLotPopup(feature, layer);
         attachEventToSelectLot(feature, layer);
+    };
+
+    const getSectionStyle = (feature) => {
+        const colors = "#90EE90";
+
+        return {
+            fillColor: colors || "#CCCCCC",
+            weight: 1,
+            color: "black",
+            fillOpacity: 0.7,
+        };
     };
 
     // lot styling
@@ -198,5 +232,6 @@ export function useFeatureProcessing() {
         processFeatures,
         validateFeature,
         separateLotsByType,
+        separateSections,
     };
 }

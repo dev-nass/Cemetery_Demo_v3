@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\DeceasedRecord;
 use App\Models\Lot;
-use Inertia\Inertia;
+use App\Models\Section;
+use Illuminate\Http\JsonResponse;
 
 class LotController extends Controller
 {
-    public function search()
+    public function search(): JsonResponse
     {
 
         $search = request('search');
@@ -24,13 +25,12 @@ class LotController extends Controller
 
                         // Lot number
                         ->orWhereHas('burialRecord.lot', function ($lot) use ($search) {
-                        $lot->where('lot_number', 'like', "%{$search}%");
-                    })
+                            $lot->where('lot_number', 'like', "%{$search}%");
+                        })
                         // Section name
                         ->orWhereHas('burialRecord.lot.section', function ($section) use ($search) {
-                        $section->where('section_name', 'like', "%{$search}%");
-                    });
-
+                            $section->where('section_name', 'like', "%{$search}%");
+                        });
                 });
             })->limit(10) // 🔥 important for suggestions
             ->get();
@@ -38,11 +38,11 @@ class LotController extends Controller
         return response()->json([
             'results' => $deceased,
         ]);
-
-
     }
+
+
     //
-    public function geoJson()
+    public function lotsGeoJson(): JsonResponse
     {
         $lots = Lot::with(['section', 'burialRecord.deceasedRecord'])->get();
 
@@ -75,6 +75,39 @@ class LotController extends Controller
                 ],
             ];
         });
+
+        return response()->json([
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        ]);
+    }
+
+
+    public function sectionsGeoJson(): JsonResponse
+    {
+        $sections = Section::all();
+
+        $features = $sections->map(function ($section) {
+            // Decode geometry JSON string safely
+            $geometry = json_decode($section->coordinates, true);
+
+            if (!$geometry || !isset($geometry['type'])) {
+                return null; // skip invalid geometry
+            }
+
+            return [
+                'type' => 'Feature',
+                'geometry' => $geometry,
+                'properties' => [
+                    'id' => $section->id,
+                    'section_code' => $section->section_code,
+                    'section_name' => $section->section_name,
+                    'description' => $section->description,
+                    'total_capacity' => $section->total_capacity,
+                    'status' => $section->status,
+                ],
+            ];
+        })->filter()->values();
 
         return response()->json([
             'type' => 'FeatureCollection',
