@@ -30,6 +30,8 @@ const onChangeVisibility = (type) => {
 
 const sectionDrawer = ref(false);
 
+const closeSectionDrawer = () => (sectionDrawer.value = false);
+
 onMounted(() => {
     initializeMap(mapContainer.value);
     window.openSectionDrawer = () => {
@@ -44,7 +46,6 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <h1 v-if="sectionDrawer">Hello</h1>
     <section class="h-dvh w-screen">
         <div class="px-10 py-5 flex items-center justify-between">
             <button
@@ -94,11 +95,11 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- Section Feature Drawer -->
-    <dialog
+    <div
         v-if="sectionDrawer"
         id="section-drawer"
         aria-labelledby="section-drawer"
-        class="fixed inset-0 size-auto max-h-none overflow-hidden bg-transparent backdrop:bg-gray-900/50"
+        class="fixed inset-0 size-auto max-h-none overflow-hidden bg-transparent backdrop:bg-gray-900/50 z-999"
     >
         <div tabindex="0" class="absolute inset-0 pl-10 sm:pl-16">
             <!-- Panel -->
@@ -108,7 +109,7 @@ onBeforeUnmount(() => {
                 <!-- Close button -->
                 <button
                     type="button"
-                    @click="closeDrawer"
+                    @click="closeSectionDrawer"
                     class="absolute top-6 left-4 text-gray-400 hover:text-white"
                 >
                     ✕
@@ -139,7 +140,7 @@ onBeforeUnmount(() => {
                 </div>
             </div>
         </div>
-    </dialog>
+    </div>
 
     <!-- Drawer -->
     <dialog
