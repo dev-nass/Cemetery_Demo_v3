@@ -132,6 +132,7 @@ export function useFeatureProcessing() {
         });
     };
 
+    // use to process the section features
     const separateSections = (features) => {
         if (!Array.isArray(features) || features.length === 0) {
             console.warn("No section features to render");
@@ -146,7 +147,7 @@ export function useFeatureProcessing() {
 
             const section = L.geoJSON(feature, {
                 style: getSectionStyle,
-                onEachFeature: onEachFeatureCustom,
+                onEachFeature: attachDrawerOpener,
             });
 
             section.addTo(sectionLayer.value);
@@ -183,6 +184,12 @@ export function useFeatureProcessing() {
             color: "black",
             fillOpacity: 0.7,
         };
+    };
+
+    const attachDrawerOpener = (feature, layer) => {
+        layer.on("click", function () {
+            window.openSectionDrawer();
+        });
     };
 
     const attachLotPopup = (feature, layer) => {

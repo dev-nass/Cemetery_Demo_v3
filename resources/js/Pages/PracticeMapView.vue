@@ -28,16 +28,23 @@ const onChangeVisibility = (type) => {
     lotVisibility.value.set(type, !current);
 };
 
+const sectionDrawer = ref(false);
+
 onMounted(() => {
     initializeMap(mapContainer.value);
+    window.openSectionDrawer = () => {
+        sectionDrawer.value = true;
+    };
 });
 
 onBeforeUnmount(() => {
     cleanupMap(); // Clean up before component is destroyed
+    delete window.openSectionDrawer;
 });
 </script>
 
 <template>
+    <h1 v-if="sectionDrawer">Hello</h1>
     <section class="h-dvh w-screen">
         <div class="px-10 py-5 flex items-center justify-between">
             <button
@@ -85,6 +92,54 @@ onBeforeUnmount(() => {
             style="height: 100vh"
         ></div>
     </section>
+
+    <!-- Section Feature Drawer -->
+    <dialog
+        v-if="sectionDrawer"
+        id="section-drawer"
+        aria-labelledby="section-drawer"
+        class="fixed inset-0 size-auto max-h-none overflow-hidden bg-transparent backdrop:bg-gray-900/50"
+    >
+        <div tabindex="0" class="absolute inset-0 pl-10 sm:pl-16">
+            <!-- Panel -->
+            <div
+                class="relative ml-auto h-full max-w-md bg-gray-700 py-6 shadow-xl"
+            >
+                <!-- Close button -->
+                <button
+                    type="button"
+                    @click="closeDrawer"
+                    class="absolute top-6 left-4 text-gray-400 hover:text-white"
+                >
+                    ✕
+                </button>
+
+                <div class="px-6">
+                    <h2
+                        id="drawer-title"
+                        class="ms-3 text-base font-semibold text-white"
+                    >
+                        Lot Information
+                    </h2>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-y-5 px-6">
+                    <DrawerElem
+                        name="Lot ID"
+                        :modelValue="selectedFeatureForm.lot_id"
+                    />
+                    <DrawerElem
+                        name="Lot Number"
+                        :modelValue="selectedFeatureForm.lot_number"
+                    />
+                    <DrawerElem
+                        name="Lot Type"
+                        :modelValue="selectedFeatureForm.lot_type"
+                    />
+                </div>
+            </div>
+        </div>
+    </dialog>
 
     <!-- Drawer -->
     <dialog
