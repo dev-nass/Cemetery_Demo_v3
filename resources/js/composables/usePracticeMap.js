@@ -13,7 +13,7 @@ const {
     lotsUndergroundLayer,
     lotsApartmentLayer,
     sectionLayer,
-    sectionVisibility,
+    showSection,
     uniqueTypes,
     lotLayers,
     lotVisibility,
@@ -48,7 +48,8 @@ export function usePracticeMap() {
     const initializeMap = async (mapContainerElem) => {
         map.value = L.map(mapContainerElem).setView([LAT, LONG], ZOOM_LVL);
 
-        L.imageOverlay(imageUrl, imageBounds).addTo(map.value);
+        // adds the overlay image on the map
+        // L.imageOverlay(imageUrl, imageBounds).addTo(map.value);
 
         initializeLayers();
         googleLayer.value.addTo(map.value);
@@ -140,7 +141,11 @@ export function usePracticeMap() {
 
                 console.log("Search result visible");
             } else {
-                sectionLayer.value.addTo(map.value);
+                if (showSection.value === true) {
+                    sectionLayer.value.addTo(map.value);
+                } else {
+                    map.value.removeLayer(sectionLayer.value);
+                }
                 uniqueTypes.value.forEach((type) => {
                     if (lotVisibility.value.get(type) === true) {
                         lotLayers.value.get(type).addTo(map.value);
@@ -169,7 +174,9 @@ export function usePracticeMap() {
         // console.log(zoom);
     };
 
+    // used if the zoom is too far
     const cleanupLayers = () => {
+        map.value.removeLayer(sectionLayer.value);
         uniqueTypes.value.forEach((type) => {
             map.value.removeLayer(lotLayers.value.get(type));
         });

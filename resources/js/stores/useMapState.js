@@ -12,13 +12,13 @@ const lotsApartmentLayer = ref(L.layerGroup());
 
 // ensure no hardcode
 const sectionLayer = ref(L.layerGroup());
-const sectionVisibility = ref(false);
 const uniqueTypes = ref([]);
 const lotLayers = ref(new Map());
 const lotVisibility = ref(new Map());
 const dbGeoJsonLots = ref([]);
 const dbGeoJsonSections = ref([]);
 
+const showSection = ref(false);
 const showUnderground = ref(false);
 const showApartment = ref(false);
 
@@ -32,7 +32,7 @@ export function useMapState() {
         lotsUndergroundLayer,
 
         sectionLayer,
-        sectionVisibility,
+        showSection,
         uniqueTypes,
         lotLayers,
         lotVisibility,

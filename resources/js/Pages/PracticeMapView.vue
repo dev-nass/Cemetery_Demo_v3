@@ -13,8 +13,14 @@ import { useMapSearchState } from "@/stores/useMapSearchState";
 
 // Stores (State)
 const { selectedFeatureForm } = useMapSelectedFeatureState();
-const { map, showUnderground, showApartment, uniqueTypes, lotVisibility } =
-    useMapState();
+const {
+    map,
+    showUnderground,
+    showApartment,
+    uniqueTypes,
+    lotVisibility,
+    showSection,
+} = useMapState();
 const { search, suggestions } = useMapSearchState();
 
 // Composables
@@ -26,6 +32,10 @@ const mapContainer = ref(null);
 const onChangeVisibility = (type) => {
     const current = lotVisibility.value.get(type) ?? false;
     lotVisibility.value.set(type, !current);
+};
+
+const onChangeSectionVisibility = () => {
+    showSection.value = !showSection.value;
 };
 
 const sectionDrawer = ref(false);
@@ -247,6 +257,15 @@ onBeforeUnmount(() => {
                                     <div
                                         class="flex space-x-2 text-sm text-gray-400"
                                     >
+                                        <div>
+                                            <ModalElem
+                                                name="Section"
+                                                :modelValue="showSection"
+                                                @update:modelValue="
+                                                    onChangeSectionVisibility()
+                                                "
+                                            />
+                                        </div>
                                         <div
                                             v-for="type in uniqueTypes"
                                             :key="type"

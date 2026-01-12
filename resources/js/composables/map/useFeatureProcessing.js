@@ -5,7 +5,7 @@ import { useMapSelectedFeatureState } from "@/stores/useMapSelectedFeatureState"
 
 const {
     sectionLayer,
-    sectionVisibility,
+    showSection,
     uniqueTypes,
     lotsUndergroundLayer,
     lotsApartmentLayer,
