@@ -25,12 +25,30 @@ const { fetchLotsDBGeoJson, fetchSectionsDBGeoJson } = useDbGeoJson();
 
 const { searchResultLayer } = useMapSearchState();
 
+// Panteon Long and Lat
+const LAT = 14.3052681;
+const LONG = 120.9758;
+const ZOOM_LVL = 18;
 const MIN_RENDER_ZOOM = 20;
 const RENDER_DEBOUNCE_MS = 2000;
 
+// (EXPERIMENTAL)
+// roughly ~1km x 1km area (adjust values)
+const offsetLat = 0.001;
+const offsetLng = 0.001;
+
+const imageBounds = [
+    [LAT - offsetLat, LONG - offsetLng], // south-west
+    [LAT + offsetLat, LONG + offsetLng], // north-east
+];
+
+let imageUrl = "/images/map-overlay.jpg";
+
 export function usePracticeMap() {
     const initializeMap = async (mapContainerElem) => {
-        map.value = L.map(mapContainerElem).setView([14.3052681, 120.9758], 18);
+        map.value = L.map(mapContainerElem).setView([LAT, LONG], ZOOM_LVL);
+
+        L.imageOverlay(imageUrl, imageBounds).addTo(map.value);
 
         initializeLayers();
         googleLayer.value.addTo(map.value);
