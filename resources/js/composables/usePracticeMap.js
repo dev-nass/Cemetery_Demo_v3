@@ -44,6 +44,12 @@ const imageBounds = [
 
 let imageUrl = "/images/map-overlay.jpg";
 
+const google_path_mess =
+    "https://www.google.com/maps/dir/14.304631,120.975636/14.305115800643793733115671784617006778717041015625,120.975157595301681112687219865620136260986328125";
+
+const google_path_correct =
+    "https://www.google.com/maps/dir/14.304631,120.975636/14.3059115,120.9764689/@14.304831,120.975668,221m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D";
+
 export function usePracticeMap() {
     const initializeMap = async (mapContainerElem) => {
         map.value = L.map(mapContainerElem).setView([LAT, LONG], ZOOM_LVL);
