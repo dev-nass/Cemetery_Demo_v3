@@ -24,7 +24,8 @@ const {
 const { search, suggestions } = useMapSearchState();
 
 // Composables
-const { initializeMap, cleanupMap } = usePracticeMap();
+const { initializeMap, cleanupMap, testPathfinding, testPathToSpecificPlot } =
+    usePracticeMap();
 const { fetchSuggestions, showSearchResult } = useSearch(map);
 const mapContainer = ref(null);
 
@@ -41,6 +42,12 @@ const onChangeSectionVisibility = () => {
 const sectionDrawer = ref(false);
 
 const closeSectionDrawer = () => (sectionDrawer.value = false);
+
+// After map initialization
+setTimeout(() => {
+    // testPathfinding();
+    testPathToSpecificPlot();
+}, 3000);
 
 onMounted(() => {
     initializeMap(mapContainer.value);

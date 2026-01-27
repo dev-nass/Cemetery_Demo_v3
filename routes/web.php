@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\JunctionController;
 use App\Http\Controllers\LotController;
+use App\Http\Controllers\PathwayController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,3 +19,6 @@ Route::controller(LotController::class)->prefix('lot')
         Route::get('/lotsGeojson', 'lotsGeoJson')->name('lots.geojson');
         Route::get('/sectionsGeojson', 'sectionsGeoJson')->name('sections.geojson');
     });
+
+Route::get('/junctions', [JunctionController::class, 'index'])->name('junctions.index');
+Route::get('/pathways', [PathwayController::class, 'index'])->name('pathways.index');

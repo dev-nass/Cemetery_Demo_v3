@@ -5,6 +5,7 @@ import { useMapState } from "@/stores/useMapState";
 import { useControl } from "./map/useControl";
 import { useDbGeoJson } from "./map/useDbGeoJson";
 import { useMapSearchState } from "../stores/useMapSearchState";
+import { pathFinder } from "./pathFinder";
 
 const {
     map,
@@ -25,6 +26,17 @@ const { fetchLotsDBGeoJson, fetchSectionsDBGeoJson } = useDbGeoJson();
 
 const { searchResultLayer } = useMapSearchState();
 
+const {
+    fetchNavigationData,
+    findShortestPath,
+    findRouteToPlot,
+    findNearestJunction,
+    getEntranceJunction,
+    junctions,
+    loading,
+    error,
+} = pathFinder();
+
 // Panteon Long and Lat
 const LAT = 14.3052681;
 const LONG = 120.9758;
@@ -43,6 +55,9 @@ const imageBounds = [
 ];
 
 let imageUrl = "/images/map-overlay.jpg";
+
+const samplePath =
+    "https://www.google.com/maps/dir/14.304631,120.975636/14.304806602040162744060580735094845294952392578125,120.976185992771007704504881985485553741455078125";
 
 const google_path_mess =
     "https://www.google.com/maps/dir/14.304631,120.975636/14.305115800643793733115671784617006778717041015625,120.975157595301681112687219865620136260986328125";
@@ -64,6 +79,7 @@ export function usePracticeMap() {
         // lotsApartmentLayer.value.addTo(map.value);
         updateVisibility();
         markEntrance();
+        markTestTarget();
 
         entranceLayer.value.on("click", onMapClick);
 
@@ -207,8 +223,218 @@ export function usePracticeMap() {
         updateVisibility();
     }, RENDER_DEBOUNCE_MS);
 
+    fetchNavigationData();
+    const markTestTarget = () => {
+        const testPlot = L.marker([
+            14.304806602040162744060580735094845294952392578125,
+            120.976185992771007704504881985485553741455078125,
+        ]).addTo(entranceLayer.value);
+
+        testPlot.bindPopup("This is the target plot");
+    };
+
+    // Test pathfinding functionality
+    const testPathfinding = () => {
+        if (loading.value) {
+            console.log("Pathfinding data still loading...");
+            return;
+        }
+
+        if (error.value) {
+            console.error("Pathfinding error:", error.value);
+            return;
+        }
+
+        if (junctions.value.length === 0) {
+            console.log("No junctions available for pathfinding");
+            return;
+        }
+
+        // Test 1: Find entrance junction
+        const entrance = getEntranceJunction();
+        if (entrance) {
+            console.log("Entrance found:", entrance);
+        } else {
+            console.log("No entrance junction found");
+        }
+
+        // Test 2: Find shortest path between first two junctions
+        if (junctions.value.length >= 2) {
+            const startJunction = junctions.value[0];
+            const endJunction = junctions.value[1];
+
+            console.log(
+                `Testing path from junction ${startJunction.id} to junction ${endJunction.id}`,
+            );
+
+            const route = findShortestPath(startJunction.id, endJunction.id);
+            console.log(route);
+
+            if (route.success) {
+                console.log("Path found!", {
+                    path: route.path,
+                    distance: route.totalDistance,
+                    details: route.details,
+                });
+
+                console.log(route.details);
+                // Draw the path on the map
+                drawPathOnMap(route.details);
+            } else {
+                console.log("No path found between these junctions");
+            }
+        }
+
+        // Test 3: Find route to your specific coordinates
+        testPathToSpecificPlot();
+    };
+
+    // Test path to your specific coordinates
+    const testPathToSpecificPlot = () => {
+        // Your MultiPolygon coordinates - extract the center point
+        const coords = [
+            120.976185992771007704504881985485553741455078125,
+            14.304806602040162744060580735094845294952392578125,
+        ];
+
+        const targetPlot = {
+            longitude: coords[0],
+            latitude: coords[1],
+            id: "target-plot",
+        };
+
+        console.log("Testing path to your specific plot:", {
+            centerLng: coords[0],
+            centerLat: coords[1],
+        });
+
+        // Find route to this plot
+        const plotRoute = findRouteToPlot(targetPlot);
+        console.log(plotRoute);
+        if (plotRoute.success) {
+            console.log("Route to your plot found!", {
+                path: plotRoute.path,
+                distance: plotRoute.totalDistance,
+                details: plotRoute.details,
+            });
+
+            // Draw the path on the map
+            drawPathOnMap(plotRoute.details);
+        } else {
+            console.log(
+                "No route found to your plot, drawing direct line from entrance",
+            );
+
+            // Draw direct line from entrance to plot
+            drawDirectPathFromEntrance(coords[0], coord[1]);
+        }
+    };
+
+    // Draw direct path from entrance to plot
+    const drawDirectPathFromEntrance = (targetLng, targetLat) => {
+        if (!map.value) return;
+
+        // Clear previous direct path
+        if (window.directPathLayer) {
+            map.value.removeLayer(window.directPathLayer);
+        }
+
+        // Entrance coordinates
+        const entranceCoords = [14.304631, 120.975636];
+
+        const coordinates = [entranceCoords, [targetLat, targetLng]];
+
+        window.directPathLayer = L.polyline(coordinates, {
+            color: "red",
+            weight: 4,
+            opacity: 0.7,
+        }).addTo(map.value);
+
+        // Add marker for target plot
+        L.marker([targetLat, targetLng])
+            .bindPopup(
+                `Target Plot<br>Center: ${targetLat.toFixed(6)}, ${targetLng.toFixed(6)}`,
+            )
+            .addTo(map.value);
+
+        // Fit map to show the path
+        map.value.fitBounds(coordinates);
+    };
+
+    // Draw line to nearest junction if no path found
+    const drawLineToNearestJunction = (
+        targetLat,
+        targetLng,
+        nearestJunction,
+    ) => {
+        if (!map.value) return;
+
+        // Clear previous nearest line
+        if (window.nearestLineLayer) {
+            map.value.removeLayer(window.nearestLineLayer);
+        }
+
+        const coordinates = [
+            [targetLat, targetLng],
+            [nearestJunction.latitude, nearestJunction.longitude],
+        ];
+
+        window.nearestLineLayer = L.polyline(coordinates, {
+            color: "orange",
+            weight: 3,
+            opacity: 0.7,
+            dashArray: "10, 10",
+        }).addTo(map.value);
+
+        // Add marker for nearest junction
+        L.marker([nearestJunction.latitude, nearestJunction.longitude])
+            .bindPopup(
+                `Nearest Junction: ${nearestJunction.junctionNumber}<br>Type: ${nearestJunction.type}`,
+            )
+            .addTo(map.value);
+    };
+
+    // Draw path on map
+    const drawPathOnMap = (routeDetails) => {
+        if (!map.value || !routeDetails || routeDetails.length === 0) return;
+
+        // Clear previous path layers
+        if (window.testPathLayer) {
+            map.value.removeLayer(window.testPathLayer);
+        }
+
+        const coordinates = routeDetails.map((detail) => [
+            detail.latitude,
+            detail.longitude,
+        ]);
+
+        // Create polyline for the path
+        window.testPathLayer = L.polyline(coordinates, {
+            color: "red",
+            weight: 4,
+            opacity: 0.7,
+        }).addTo(map.value);
+
+        // Add markers for junctions
+        routeDetails.forEach((detail, index) => {
+            const marker = L.marker([detail.latitude, detail.longitude])
+                .bindPopup(`Junction ${detail.junctionNumber} (${detail.type})`)
+                .addTo(map.value);
+        });
+
+        // Fit map to show the entire path
+        if (coordinates.length > 0) {
+            map.value.fitBounds(coordinates);
+        }
+    };
+
     return {
         initializeMap,
         cleanupMap,
+        // pathfinder
+        testPathfinding,
+        testPathToSpecificPlot,
+        drawPathOnMap,
+        drawDirectPathFromEntrance,
     };
 }
