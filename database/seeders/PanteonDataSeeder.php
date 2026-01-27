@@ -11,7 +11,6 @@ use Illuminate\Database\Seeder;
 
 class PanteonDataSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      */
@@ -76,6 +75,11 @@ class PanteonDataSeeder extends Seeder
 
         $this->command->info("Seeding lots from GeoJSON...");
 
+        /**
+        * If I remember correctly, foreach create a shallow coppy of the array,
+        * meaning that if I states $features['properties']['lot_type'] = 'underground'
+        * It won't change the actual value just the shallow copy
+        * */
         // Add lot_type to each feature's properties
         // REFERENCE OPERATOR
         foreach ($geoJsonData_underground['features'] as &$feature) {

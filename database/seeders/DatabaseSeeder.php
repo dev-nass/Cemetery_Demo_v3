@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(PanteonDataSeeder::class);
+        $this->call(Pathfinder::class);
 
         User::factory()->create([
             'name' => 'Test User',
