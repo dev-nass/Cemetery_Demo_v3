@@ -10,6 +10,7 @@ export function pathFinder() {
 
     /**
      * Fetch navigation data from API
+     * and feed those data to junctions and pathways states
      */
     const fetchNavigationData = async () => {
         try {
@@ -50,11 +51,14 @@ export function pathFinder() {
     };
 
     /**
-     * Build adjacency graph from pathways data
+     * Build adjacency graph from pathways data,
+     * Groups pathways data based on their "from" and "to"
+     * "from" as the key and "to" as values
      * @param {Array} pathways - Array of pathway objects from API
      * @returns {Object} Graph structure
      */
     const buildGraph = (pathways) => {
+        // NOTE: becomes Object of Array with objects {}; check code equivalent
         const graph = {};
 
         pathways.forEach((pathway) => {
@@ -76,10 +80,14 @@ export function pathFinder() {
             });
         });
 
+        console.log("Graph", graph);
+
         return graph;
     };
 
     /**
+     * FIX: UNDERSTAND THIS AGAIN
+     *
      * Reconstruct the path from previous nodes
      * @param {Object} previous - Previous nodes mapping
      * @param {Number} start - Start junction ID
@@ -110,6 +118,8 @@ export function pathFinder() {
     };
 
     /**
+     * FIX: Understand this again
+     *
      * Build detailed route information for display
      * @param {Array} path - Array of junction IDs
      * @param {Array} allJunctions - All junction objects
@@ -171,9 +181,11 @@ export function pathFinder() {
         const unvisited = new Set();
 
         // Get all unique junction IDs from graph
+        // so baically we are doing this because some junction are not
+        // included as keys because they are the last one
         const junctionIds = new Set([
-            ...Object.keys(graph.value).map(Number),
-            ...Object.values(graph.value)
+            ...Object.keys(graph.value).map(Number), // gets all junction id that are on "from"
+            ...Object.values(graph.value) // gets all junction id that are on "to"
                 .flat()
                 .map((edge) => edge.junctionId),
         ]);
@@ -187,6 +199,7 @@ export function pathFinder() {
         // Distance to start is 0
         distances[startJunctionId] = 0;
 
+        // NOTE: Continue here
         // Main algorithm loop
         while (unvisited.size > 0) {
             // Find unvisited node with smallest distance
@@ -276,7 +289,8 @@ export function pathFinder() {
     };
 
     /**
-     * Find nearest junction to a given coordinate
+     * Find nearest junction to a given coordinate,
+     * access the junctions state and find the nearest
      * @param {Number} latitude - Target latitude
      * @param {Number} longitude - Target longitude
      * @returns {Object|null} Nearest junction object
@@ -312,7 +326,7 @@ export function pathFinder() {
 
     /**
      * Find route from entrance to a plot
-     * @param {Object} plot - Plot object with latitude and longitude
+     * @param {Object} plot - Plot object with longitude and latitude
      * @returns {Object} Route information
      */
     const findRouteToPlot = (plot) => {
