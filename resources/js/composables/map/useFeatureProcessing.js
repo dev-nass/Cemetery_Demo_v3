@@ -100,7 +100,7 @@ export function useFeatureProcessing() {
         uniqueTypes.value.forEach((type) => {
             // console.log(type);
             lotLayers.value.set(type, L.layerGroup());
-            lotVisibility.value.set(type, true);
+            lotVisibility.value.set(type, false);
         });
 
         // console.log(lotLayers.value);

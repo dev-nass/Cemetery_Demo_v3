@@ -56,8 +56,17 @@ const imageBounds = [
 
 let imageUrl = "/images/map-overlay.jpg";
 
+// no junction
 const samplePath =
     "https://www.google.com/maps/dir/14.304631,120.975636/14.304806602040162744060580735094845294952392578125,120.976185992771007704504881985485553741455078125";
+
+// with junction
+const samplePathv2 =
+    "https://www.google.com/maps/dir/14.304631,120.975636/14.3048291586219722404393905890174210071563720703125,120.976559224839661510486621409654617309570312k";
+
+// in between junction
+const samplePathv3 =
+    "https://www.google.com/maps/dir/14.304631,120.975636/14.30464452558492638445386546663939952850341796875,120.976574797456379428695072419941425323486328125";
 
 const google_path_mess =
     "https://www.google.com/maps/dir/14.304631,120.975636/14.305115800643793733115671784617006778717041015625,120.975157595301681112687219865620136260986328125";
@@ -225,9 +234,19 @@ export function usePracticeMap() {
 
     fetchNavigationData();
     const markTestTarget = () => {
+        // const testPlot = L.marker([
+        //     14.304806602040162744060580735094845294952392578125,
+        //     120.976185992771007704504881985485553741455078125,
+        // ]).addTo(entranceLayer.value);
+
+        // const testPlot = L.marker([
+        //     14.304777907839792305821902118623256683349609375,
+        //     120.976560652182428157175309024751186370849609375,
+        // ]).addTo(entranceLayer.value);
+
         const testPlot = L.marker([
-            14.304806602040162744060580735094845294952392578125,
-            120.976185992771007704504881985485553741455078125,
+            14.30464452558492638445386546663939952850341796875,
+            120.976574797456379428695072419941425323486328125,
         ]).addTo(entranceLayer.value);
 
         testPlot.bindPopup("This is the target plot");
@@ -292,9 +311,19 @@ export function usePracticeMap() {
     // Test path to your specific coordinates
     // Fix the test function
     const testPathToSpecificPlot = () => {
+        // const coords = [
+        //     120.976185992771007704504881985485553741455078125,
+        //     14.304806602040162744060580735094845294952392578125,
+        // ];
+
+        // const coords = [
+        //     120.9765592248396615104866214096546173095703125, // long
+        //     14.3048291586219722404393905890174210071563720703125, // lat
+        // ];
+
         const coords = [
-            120.976185992771007704504881985485553741455078125, // longitude
-            14.304806602040162744060580735094845294952392578125, // latitude
+            120.976574797456379428695072419941425323486328125,
+            14.30464452558492638445386546663939952850341796875,
         ];
 
         // ADD THIS DEBUG LOG
@@ -427,11 +456,11 @@ export function usePracticeMap() {
         }).addTo(map.value);
 
         // Add markers for junctions
-        routeDetails.forEach((detail, index) => {
-            const marker = L.marker([detail.latitude, detail.longitude])
-                .bindPopup(`Junction ${detail.junctionNumber} (${detail.type})`)
-                .addTo(map.value);
-        });
+        // routeDetails.forEach((detail, index) => {
+        //     const marker = L.marker([detail.latitude, detail.longitude])
+        //         .bindPopup(`Junction ${detail.junctionNumber} (${detail.type})`)
+        //         .addTo(map.value);
+        // });
 
         // Fit map to show the entire path
         if (coordinates.length > 0) {
