@@ -290,16 +290,26 @@ export function usePracticeMap() {
     };
 
     // Test path to your specific coordinates
+    // Fix the test function
     const testPathToSpecificPlot = () => {
-        // Your MultiPolygon coordinates - extract the center point
         const coords = [
-            120.976185992771007704504881985485553741455078125,
-            14.304806602040162744060580735094845294952392578125,
+            120.976185992771007704504881985485553741455078125, // longitude
+            14.304806602040162744060580735094845294952392578125, // latitude
         ];
+
+        // ADD THIS DEBUG LOG
+        console.log("Target coordinates:", {
+            lat: coords[1],
+            lng: coords[0],
+            "Should be near entrance": {
+                entrance_lat: 14.304631,
+                entrance_lng: 120.975636,
+            },
+        });
 
         const targetPlot = {
             longitude: coords[0],
-            latitude: coords[1],
+            latitude: coords[1], // Now using correct indices
             id: "target-plot",
         };
 
@@ -308,9 +318,9 @@ export function usePracticeMap() {
             centerLat: coords[1],
         });
 
-        // Find route to this plot
         const plotRoute = findRouteToPlot(targetPlot);
         console.log(plotRoute);
+
         if (plotRoute.success) {
             console.log("Route to your plot found!", {
                 path: plotRoute.path,
@@ -318,31 +328,33 @@ export function usePracticeMap() {
                 details: plotRoute.details,
             });
 
-            // Draw the path on the map
             drawPathOnMap(plotRoute.details);
         } else {
             console.log(
                 "No route found to your plot, drawing direct line from entrance",
             );
 
-            // Draw direct line from entrance to plot
-            drawDirectPathFromEntrance(coords[0], coord[1]);
+            // FIX: Pass latitude first, then longitude
+            drawDirectPathFromEntrance(coords[1], coords[0]); // (lat, lng)
         }
     };
 
-    // Draw direct path from entrance to plot
-    const drawDirectPathFromEntrance = (targetLng, targetLat) => {
+    // Fix the direct path function - rename params for clarity
+    const drawDirectPathFromEntrance = (targetLat, targetLng) => {
         if (!map.value) return;
 
-        // Clear previous direct path
         if (window.directPathLayer) {
             map.value.removeLayer(window.directPathLayer);
         }
 
-        // Entrance coordinates
+        // Entrance coordinates [lat, lng]
         const entranceCoords = [14.304631, 120.975636];
 
-        const coordinates = [entranceCoords, [targetLat, targetLng]];
+        // Leaflet expects [lat, lng]
+        const coordinates = [
+            entranceCoords,
+            [targetLat, targetLng], // Now correctly ordered
+        ];
 
         window.directPathLayer = L.polyline(coordinates, {
             color: "red",
@@ -357,7 +369,6 @@ export function usePracticeMap() {
             )
             .addTo(map.value);
 
-        // Fit map to show the path
         map.value.fitBounds(coordinates);
     };
 

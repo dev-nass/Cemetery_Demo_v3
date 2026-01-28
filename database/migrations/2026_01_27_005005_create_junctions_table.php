@@ -13,8 +13,8 @@ return new class extends Migration {
         Schema::create('junctions', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['entrance', 'intersection']);
-            $table->integer('latitude');
-            $table->integer('longitude');
+            $table->decimal('latitude', 10, 8);   // ✓ 2 digits before, 8 after (good for lat)
+            $table->decimal('longitude', 11, 8);  // ✓ 3 digits before, 8 after (good for lng)
             $table->timestamps();
         });
     }
