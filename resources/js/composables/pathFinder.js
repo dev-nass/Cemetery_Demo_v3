@@ -176,13 +176,18 @@ export function pathFinder() {
         }
 
         // Initialize distances and previous nodes
+
+        // holds the obj of junction ids and set their distance based on the startJunctionId param
+        // 2: 50.2; meaning that junction id 2 has 50.2 meters away from the the startJunctionId param
         const distances = {};
         const previous = {};
-        const unvisited = new Set();
+
+        const unvisited = new Set(); // holds the a
 
         // Get all unique junction IDs from graph
         // so baically we are doing this because some junction are not
-        // included as keys because they are the last one
+        // included as keys because they are the last one,
+        // meaning they have no "from" and "to" on the graph.value
         const junctionIds = new Set([
             ...Object.keys(graph.value).map(Number), // gets all junction id that are on "from"
             ...Object.values(graph.value) // gets all junction id that are on "to"
@@ -242,6 +247,8 @@ export function pathFinder() {
                 const alt = distances[currentJunction] + neighbor.distance;
 
                 // If this path is shorter, update
+                // Similarly, at firtst if we encounter the distances[startJunctionId] = 0;
+                // this IF statement will run
                 if (alt < distances[neighborId]) {
                     distances[neighborId] = alt;
                     previous[neighborId] = {
