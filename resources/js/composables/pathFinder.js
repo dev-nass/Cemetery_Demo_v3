@@ -199,14 +199,15 @@ export function pathFinder() {
         // Distance to start is 0
         distances[startJunctionId] = 0;
 
-        // NOTE: Continue here
         // Main algorithm loop
         while (unvisited.size > 0) {
             // Find unvisited node with smallest distance
             let currentJunction = null;
             let smallestDistance = Infinity;
 
+            // junctionId, because the values of unvisited set are junctionIds
             for (const junctionId of unvisited) {
+                // if we encounter the distances[startJunctionId] = 0; this IF statement will run
                 if (distances[junctionId] < smallestDistance) {
                     smallestDistance = distances[junctionId];
                     currentJunction = junctionId;
@@ -229,9 +230,11 @@ export function pathFinder() {
             // Remove current from unvisited
             unvisited.delete(currentJunction);
 
-            // Check all neighbors
+            // Check all neighbors,
+            // all the junctions that share the same from junction id
             const neighbors = graph.value[currentJunction] || [];
 
+            // NOTE: Continue here
             for (const neighbor of neighbors) {
                 const neighborId = neighbor.junctionId;
 
@@ -250,6 +253,7 @@ export function pathFinder() {
             }
         }
 
+        // NOTE: Continue up to here (what previous value are we passing if we don't alt < distance[neighborId])
         // Reconstruct path
         const path = reconstructPath(previous, startJunctionId, endJunctionId);
 
