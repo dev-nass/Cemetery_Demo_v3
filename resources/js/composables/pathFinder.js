@@ -86,16 +86,14 @@ export function pathFinder() {
     };
 
     /**
-     * FIX: UNDERSTAND THIS AGAIN
-     *
      * Reconstruct the path from previous nodes
      * @param {Object} previous - Previous nodes mapping
      * @param {Number} start - Start junction ID
      * @param {Number} end - End junction ID
-     * @returns {Array} Path as array of junction IDs
+     * @returns {Array} Path as array of junction IDs from start to end
      */
     const reconstructPath = (previous, start, end) => {
-        const path = [];
+        const path = []; // an array of id tracing from start edge (junction) -> edge -> edge -> end edge
         let current = end;
 
         // Build path backwards from end to start
@@ -110,6 +108,7 @@ export function pathFinder() {
         }
 
         // If path doesn't start with start junction, no route found
+        // guard clause
         if (path[0] !== start) {
             return [];
         }
@@ -118,10 +117,9 @@ export function pathFinder() {
     };
 
     /**
-     * FIX: Understand this again
      *
      * Build detailed route information for display
-     * @param {Array} path - Array of junction IDs
+     * @param {Array} path - Array of junction IDs (start junctions -> junction -> junction -> end junction)
      * @param {Array} allJunctions - All junction objects
      * @param {Object} previous - Previous nodes mapping
      * @returns {Array} Detailed route information
@@ -210,9 +208,10 @@ export function pathFinder() {
             let currentJunction = null;
             let smallestDistance = Infinity;
 
-            // junctionId, because the values of unvisited set are junctionIds
+            // const junctionId because the values of unvisited set are junctionIds
             for (const junctionId of unvisited) {
                 // if we encounter the distances[startJunctionId] = 0; this IF statement will run
+                // and on the second iteration the distance[neighborId] = alt; this IF statement will also run
                 if (distances[junctionId] < smallestDistance) {
                     smallestDistance = distances[junctionId];
                     currentJunction = junctionId;
@@ -239,7 +238,7 @@ export function pathFinder() {
             // all the junctions that share the same from junction id
             const neighbors = graph.value[currentJunction] || [];
 
-            // NOTE: Continue here
+            // Only enter here if the curre
             for (const neighbor of neighbors) {
                 const neighborId = neighbor.junctionId;
 
@@ -252,7 +251,7 @@ export function pathFinder() {
                 if (alt < distances[neighborId]) {
                     distances[neighborId] = alt;
                     previous[neighborId] = {
-                        junctionId: currentJunction,
+                        junctionId: currentJunction, // junctinId key here, refers to junction id this neighbor is from
                         pathwayId: neighbor.pathwayId,
                         coordinates: neighbor.coordinates,
                     };
