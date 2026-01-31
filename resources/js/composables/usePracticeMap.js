@@ -253,6 +253,7 @@ export function usePracticeMap() {
     };
 
     // Test pathfinding functionality
+    // NOTE: This method is not used
     const testPathfinding = () => {
         if (loading.value) {
             console.log("Pathfinding data still loading...");
@@ -402,6 +403,7 @@ export function usePracticeMap() {
     };
 
     // Draw line to nearest junction if no path found
+    // NOTE: This function is not used
     const drawLineToNearestJunction = (
         targetLat,
         targetLng,
