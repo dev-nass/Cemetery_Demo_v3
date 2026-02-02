@@ -1,5 +1,5 @@
 - Files and methods hierarchy
-  ![alt text](images/pathFinder-structure.png)
+  ![alt text](images/pathFinderStructure.png)
 
 - Visual explanation of `findShortestPath` function
   ![alt text](images/findShortedPath.png)
