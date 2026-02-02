@@ -136,6 +136,7 @@ export function usePracticeMap() {
     };
 
     const markEntrance = () => {
+        // Lat and long
         const marker = L.marker([14.304631, 120.975636]).addTo(
             entranceLayer.value,
         );
@@ -364,7 +365,8 @@ export function usePracticeMap() {
                 "No route found to your plot, drawing direct line from entrance",
             );
 
-            // FIX: Pass latitude first, then longitude
+            // NOTE: This function is only invoked when the coordinates of the targetPlot variable is not
+            // found
             drawDirectPathFromEntrance(coords[1], coords[0]); // (lat, lng)
         }
     };
@@ -436,7 +438,7 @@ export function usePracticeMap() {
             .addTo(map.value);
     };
 
-    // Draw path on map
+    // Draw path on map (from Entrance junction/edge to end/destination junction)
     const drawPathOnMap = (routeDetails) => {
         if (!map.value || !routeDetails || routeDetails.length === 0) return;
 
