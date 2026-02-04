@@ -176,11 +176,12 @@ export function pathFinder() {
         // Initialize distances and previous nodes
 
         // holds the obj of junction ids and set their distance based on the startJunctionId param
-        // 2: 50.2; meaning that junction id 2 has 50.2 meters away from the the startJunctionId param
+        // sample value: 2: 50.2;
+        // meaning that junction id 2 has 50.2 meters away from the the startJunctionId param
         const distances = {};
         const previous = {};
 
-        const unvisited = new Set(); // holds the a
+        const unvisited = new Set(); // holds the id of all unexplored junctions
 
         // Get all unique junction IDs from graph
         // so baically we are doing this because some junction are not
@@ -299,8 +300,9 @@ export function pathFinder() {
     };
 
     /**
-     * Find nearest junction to a given coordinate,
+     * Find nearest junction to a given target coordinate of a plot,
      * access the junctions state and find the nearest
+     * This function is responsible for giving the END/TARGET junction
      * @param {Number} latitude - Target latitude
      * @param {Number} longitude - Target longitude
      * @returns {Object|null} Nearest junction object
@@ -323,7 +325,7 @@ export function pathFinder() {
             }
         });
 
-        return nearest;
+        return nearest; // return one junction that will be targeted
     };
 
     /**
@@ -351,6 +353,7 @@ export function pathFinder() {
             };
         }
 
+        // gets the end junction that will be targeted to navigate to the lot
         const nearestJunction = findNearestJunction(
             plot.latitude,
             plot.longitude,
