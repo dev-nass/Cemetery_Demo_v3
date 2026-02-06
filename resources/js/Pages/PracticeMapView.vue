@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
         </div>
     </dialog>
 
-    <!-- Modal -->
+    <!-- Filtering Modal -->
     <el-dialog>
         <dialog
             id="dialog"
