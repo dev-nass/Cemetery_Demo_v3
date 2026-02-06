@@ -29,7 +29,7 @@ const notFocus = () => {
 };
 </script>
 <template>
-    <div class="mt-2 relative">
+    <div class="relative">
         <div
             class="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500"
         >

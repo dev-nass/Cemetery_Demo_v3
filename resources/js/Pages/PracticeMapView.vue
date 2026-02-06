@@ -64,51 +64,63 @@ onBeforeUnmount(() => {
 
 <template>
     <section class="h-dvh w-screen">
-        <div class="px-10 py-5 flex items-center justify-between">
-            <button
-                command="show-modal"
-                commandfor="drawer"
-                class="flex items-center gap-x-2 rounded-md bg-white/10 px-2.5 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-white/5 disabled:hover:bg-white/5"
-                :disabled="!selectedFeatureForm.lot_id"
+        <div id="map-wrapper" class="relative">
+            <div
+                ref="mapContainer"
+                id="map"
+                class="h-full w-full absolute z-0"
+                style="height: 100vh"
+            ></div>
+            <div
+                class="px-10 py-1 flex items-center justify-between absolute w-full"
             >
-                Open Drawer
-            </button>
-            <Search
-                v-model="search"
-                :suggestions="suggestions"
-                @input="fetchSuggestions"
-                @select-suggestion="showSearchResult"
-            />
-            <button
-                command="show-modal"
-                commandfor="dialog"
-                class="flex items-center gap-x-2 rounded-md bg-white/10 px-2.5 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-list-filter-icon lucide-list-filter"
-                >
-                    <path d="M2 5h20" />
-                    <path d="M6 12h12" />
-                    <path d="M9 19h6" />
-                </svg>
-                Filter
-            </button>
+                <div class="bg-gray-700 p-2 rounded-xl">
+                    <Search
+                        v-model="search"
+                        :suggestions="suggestions"
+                        @input="fetchSuggestions"
+                        @select-suggestion="showSearchResult"
+                    />
+                </div>
+                <div class="flex space-x-3">
+                    <div class="bg-gray-700 p-2 rounded-xl">
+                        <button
+                            command="show-modal"
+                            commandfor="drawer"
+                            class="flex items-center gap-x-2 rounded-md bg-white/10 px-2.5 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-white/5 disabled:hover:bg-white/5"
+                            :disabled="!selectedFeatureForm.lot_id"
+                        >
+                            Open Drawer
+                        </button>
+                    </div>
+                    <div class="bg-gray-700 p-2 rounded-xl">
+                        <button
+                            command="show-modal"
+                            commandfor="dialog"
+                            class="flex items-center gap-x-2 rounded-md bg-white/10 px-2.5 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-list-filter-icon lucide-list-filter"
+                            >
+                                <path d="M2 5h20" />
+                                <path d="M6 12h12" />
+                                <path d="M9 19h6" />
+                            </svg>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div
-            ref="mapContainer"
-            id="map"
-            class="h-full w-full"
-            style="height: 100vh"
-        ></div>
     </section>
 
     <!-- Section Feature Drawer -->

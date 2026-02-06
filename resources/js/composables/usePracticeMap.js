@@ -77,6 +77,12 @@ const google_path_correct =
 export function usePracticeMap() {
     const initializeMap = async (mapContainerElem) => {
         map.value = L.map(mapContainerElem).setView([LAT, LONG], ZOOM_LVL);
+        map.value.zoomControl.remove();
+        L.control
+            .zoom({
+                position: "bottomleft",
+            })
+            .addTo(map.value);
 
         // adds the overlay image on the map
         // L.imageOverlay(imageUrl, imageBounds).addTo(map.value);
@@ -101,6 +107,7 @@ export function usePracticeMap() {
         //         Underground: lotsUndergroundLayer.value,
         //     } // Overlays
         // );
+
         initializeDrawControl(map.value);
 
         map.value.on("zoomend", updateVisibility);

@@ -26,6 +26,7 @@ export function useControl() {
         }
 
         const drawControl = new L.Control.Draw({
+            position: "bottomleft",
             draw: {
                 polygon: {
                     allowIntersection: false,
