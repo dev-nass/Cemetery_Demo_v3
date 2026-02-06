@@ -1,0 +1,192 @@
+{
+    "type": "FeatureCollection",
+    "name": "pathwaysv2",
+    "crs": {
+        "type": "name",
+        "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": { "id": 14, "from_junct": "5", "to_junct": "15" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.97617763986527, 14.305192144438845],
+                        [120.976190114454141, 14.304807351104634]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 1, "from_junct": "1", "to_junct": "2" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.975606962577913, 14.304600427009802],
+                        [120.97577550946157, 14.304963813154634]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 2, "from_junct": "2", "to_junct": "3" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.97577550946157, 14.304963813154634],
+                        [120.975883775339526, 14.305003484629935]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 3, "from_junct": "3", "to_junct": "4" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.975883775339526, 14.305003484629935],
+                        [120.975915618244784, 14.30516305204873]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 4, "from_junct": "4", "to_junct": "5" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.975915618244784, 14.30516305204873],
+                        [120.97617763986527, 14.305192144438845]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 5, "from_junct": "5", "to_junct": "6" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.97617763986527, 14.305192144438845],
+                        [120.976525182431303, 14.305216828888105]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 6, "from_junct": "6", "to_junct": "8" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976525182431303, 14.305216828888105],
+                        [120.976551107021109, 14.304774941329892]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 7, "from_junct": "8", "to_junct": "7" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976551107021109, 14.304774941329892],
+                        [120.976566123309539, 14.304534479184991]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 8, "from_junct": "8", "to_junct": "9" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976102235630634, 14.304748397660243],
+                        [120.976551107021109, 14.304774941329892]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 9, "from_junct": "8", "to_junct": "10" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976551107021109, 14.304774941329892],
+                        [120.976129040255529, 14.30474908553661]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 10, "from_junct": "8", "to_junct": "11" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976551107021109, 14.304774941329892],
+                        [120.976151433269848, 14.304750291021302]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 11, "from_junct": "8", "to_junct": "12" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976551107021109, 14.304774941329892],
+                        [120.976216124200022, 14.304755112960024]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 12, "from_junct": "8", "to_junct": "13" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976551107021109, 14.304774941329892],
+                        [120.976239761270648, 14.304756318444689]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "id": 13, "from_junct": "8", "to_junct": "14" },
+            "geometry": {
+                "type": "MultiLineString",
+                "coordinates": [
+                    [
+                        [120.976551107021109, 14.304774941329892],
+                        [120.976259616226301, 14.304758104964121]
+                    ]
+                ]
+            }
+        }
+    ]
+}

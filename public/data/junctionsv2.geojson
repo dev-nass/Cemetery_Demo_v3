@@ -1,0 +1,186 @@
+{
+    "type": "FeatureCollection",
+    "name": "junctionsv2",
+    "crs": {
+        "type": "name",
+        "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": { "id": 1, "node_name": "j1", "type": "entrance" },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.975606962577942, 14.304600427009802]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 2,
+                "node_name": "j2",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.975775509461599, 14.304963813154634]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 3,
+                "node_name": "j3",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.975883775339526, 14.305003484629939]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 4,
+                "node_name": "j4",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.975915618244784, 14.305163052048734]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 5,
+                "node_name": "j5",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.97617763986527, 14.305192144438845]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 6,
+                "node_name": "j6",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976525182431331, 14.305216828888105]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 7,
+                "node_name": "j7",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976566123309539, 14.304534479184991]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 8,
+                "node_name": "j8",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976551107021109, 14.304774941329892]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 9,
+                "node_name": "j9",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976102235630663, 14.304748397660243]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 10,
+                "node_name": "j10",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976129040255529, 14.304749085536606]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 11,
+                "node_name": "j11",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976151433269848, 14.304750291021302]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 12,
+                "node_name": "j12",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976216124200022, 14.304755112960024]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 13,
+                "node_name": "j13",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976239761270662, 14.304756318444689]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 14,
+                "node_name": "j14",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.976259616226301, 14.304758104964121]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 15,
+                "node_name": "j15",
+                "type": "intersection"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.97619011445417, 14.304807351104634]
+            }
+        }
+    ]
+}

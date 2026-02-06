@@ -144,9 +144,8 @@ export function usePracticeMap() {
 
     const markEntrance = () => {
         // Lat and long
-        const marker = L.marker([14.304631, 120.975636]).addTo(
-            entranceLayer.value,
-        );
+        const e_coordinates = [14.304600427009802, 120.975606962577942];
+        const marker = L.marker(e_coordinates).addTo(entranceLayer.value);
 
         marker.bindPopup("Here's the entrance");
     };

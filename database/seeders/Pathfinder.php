@@ -21,7 +21,7 @@ class Pathfinder extends Seeder
     {
         // ❌ ISSUE 1: public_path() returns a string path, not the file contents
         // ✅ FIX: Use file_get_contents() to read the file
-        $geoJsonPath = public_path('data/junctions.geojson');
+        $geoJsonPath = public_path('data/junctionsv2.geojson');
 
         if (!file_exists($geoJsonPath)) {
             $this->command->error("GeoJSON file for junction coords not found at path: {$geoJsonPath}");
@@ -59,7 +59,7 @@ class Pathfinder extends Seeder
     private function seedPathways(): void
     {
         // ❌ ISSUE 6: Wrong filename (pathway.geojson vs pathways.geojson)
-        $geoJsonPath = public_path('data/pathways.geojson'); // Match your actual filename
+        $geoJsonPath = public_path('data/pathwaysv2.geojson'); // Match your actual filename
 
         if (!file_exists($geoJsonPath)) {
             $this->command->error("GeoJSON file for pathways not found at path: {$geoJsonPath}");
