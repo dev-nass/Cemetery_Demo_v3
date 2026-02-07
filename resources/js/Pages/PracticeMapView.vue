@@ -29,7 +29,7 @@ const { initializeMap, cleanupMap, testPathfinding, testPathToSpecificPlot } =
 const { fetchSuggestions, showSearchResult } = useSearch(map);
 const mapContainer = ref(null);
 
-// Event Handler
+// Event Handler (State Modifications)
 const onChangeVisibility = (type) => {
     const current = lotVisibility.value.get(type) ?? false;
     lotVisibility.value.set(type, !current);
